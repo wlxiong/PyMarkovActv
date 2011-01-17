@@ -1,7 +1,8 @@
 # create elements
 from shared.universe import elem
 from events.activity import Activity, Bundle
-from networks.basic import Zone
+from networks.basic import Node, Zone 
+from networks.motor import Road 
 from networks.transit import Stop, TransitLine
 from networks.pedestrian import Sidewalk
 
@@ -18,27 +19,39 @@ def add_bundle(key, activity_name_list):
                         activity_name_list)
     elem.bundles[key] = Bundle(bundle_name, activity_list)
 
-def add_zone(key, activity_name_list, population):
-    zone_name = 'ZN' + str(key)
-    activity_list = map(lambda actv_name: elem.activities[actv_name], activity_name_list)
-    elem.nodes[key] = Zone(zone_name, activity_list, population)
-
-def add_sidewalk(key, head_name, tail_name, walk_time, capacity):
-    sidewalk_name = 'SW' + str(key)
-    head_node, tail_node = elem.nodes[head_name], elem.nodes[tail_name]
-    elem.walks[key] = Sidewalk(sidewalk_name, head_node, tail_node, walk_time, capacity)
-
-def add_road(key, head_name, tail_name, drive_time, capacity):
-    road_name = 'RD' + str(key)
-    head_node, tail_node = elem.nodes[head_name], elem.nodes[tail_name]
-    elem.roads[key] = Road(road_name, head_node, tail_node, drive_time, capacity)
-
 def get_stop(key):
     "Return the stop with the given name, creating it if necessary. "
     if key not in elem.nodes:
         stop_name = 'ST' + str(key)
         elem.nodes[key] = Stop(stop_name)
     return elem.nodes[key]
+
+def get_node(key):
+    "Return the node with the given name, creating it if necessary. "
+    if key not in elem.nodes:
+        node_name = 'ND' + str(key)
+        elem.nodes[key] = Node(node_name)
+    return elem.nodes[key]
+
+def add_zone(key, activity_name_list, population):
+    zone_name = 'ZN' + str(key)
+    activity_list = map(lambda actv_name: elem.activities[actv_name], activity_name_list)
+    # create this zone and add it to the node list 
+    elem.nodes[key] = Zone(zone_name, activity_list, population)
+
+def add_sidewalk(key, head_name, tail_name, walk_time, capacity):
+    sidewalk_name = 'SW' + str(key)
+    get_node(head_name)
+    get_node(tail_name)
+    head_node, tail_node = elem.nodes[head_name], elem.nodes[tail_name]
+    elem.walks[key] = Sidewalk(sidewalk_name, head_node, tail_node, walk_time, capacity)
+
+def add_road(key, head_name, tail_name, drive_time, capacity):
+    road_name = 'RD' + str(key)
+    get_node(head_name)
+    get_node(tail_name)
+    head_node, tail_node = elem.nodes[head_name], elem.nodes[tail_name]
+    elem.roads[key] = Road(road_name, head_node, tail_node, drive_time, capacity)
 
 def gen_timetable(offset, headway, dwell_time, total_run, in_vehicle_time):
     " Generate the timetable with given parameters. "
