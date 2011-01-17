@@ -1,6 +1,7 @@
 # enumerate paths
 from routing.path import Path
 from networks.basic import Edge
+from networks.motor import Road 
 from networks.transit import TransitLine
 from networks.pedestrian import Sidewalk
 
@@ -30,15 +31,15 @@ def find_all_path(start_node, end_node, thepath=Path()):
                     newpaths = find_all_path(next_stop, end_node, extpath)
                     for newpath in newpaths:
                         path_set.append(newpath)
-		if isinstance(each_vector, Road):
-			road = each_vector
-			next_node = road.tail_node
-			if next_node not in thepath.nodes_on_path: 
-				extpath = thepath + Path([start_node, next_node], \
-										 [Edge(road, start_node, next_node)])
-				newpaths = find_all_path(next_node, end_node, extpath)
-				for newpath in newpaths: 
-					path_set.append(newpath)
+        if isinstance(each_vector, Road):
+            road = each_vector
+            next_node = road.tail_node
+            if next_node not in thepath.nodes_on_path: 
+                extpath = thepath + Path([start_node, next_node], \
+                                         [Edge(road, start_node, next_node)])
+                newpaths = find_all_path(next_node, end_node, extpath)
+                for newpath in newpaths: 
+                    path_set.append(newpath)
     return path_set
 
 def main():
