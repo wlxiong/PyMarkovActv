@@ -3,7 +3,7 @@ import math
 from shared.universe import flow 
 
 class Road(Vector):
-    """ Sidewalk is the connection between zones (residential location, economic activity area)
+    """ Road is the connection between zones (residential location, economic activity area)
         and hubs (i.e. transit stop, parking lot) in transport network. 
     """
     def __init__(self, name, head_node, tail_node, drive_time, capacity, toll = 0.0):
