@@ -24,7 +24,7 @@ def calc_commodity_flow():
 def calc_state_flows():
     # calculate flow variables based on state optimal utility
     for comm in enum_commodity():
-        print ">>commodity %s" % comm
+        print "   commodity %s" % comm
         # backtrack from the ending to the beginning
         for timeslice in xrange(min2slice(conf.DAY)):
             for state in enum_state(comm, timeslice):

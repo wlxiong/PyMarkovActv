@@ -139,18 +139,18 @@ def export_travel_times(export):
     
 # export computational results
 def export_data(case_name):
-	fout = open('../equil_flows_'+case_name+'.log', 'w')
-	export_configure(fout)
-	export_bundle_choice(fout)
+    fout = open('../equil_flows_'+case_name+'.log', 'w')
+    # export_configure(fout)
+    export_bundle_choice(fout)
     export_activity_duration(fout)
     export_zone_population(fout)
     export_actv_population(fout)
     export_state_flows(fout)
     export_depart_flows(fout)
     export_optimal_util(fout)
-	#    export_movement_flows(fout)
-	#    export_travel_times(fout)
-	fout.close()
+    #    export_movement_flows(fout)
+    #    export_travel_times(fout)
+    fout.close()
 
 ##     export_aggreg_trip(export_file)
 ##     export_activity_trip(export_file)

@@ -5,11 +5,11 @@ class Config(object):
     DAY = 1440
     # minutes per tick
     TICK = 5
-    def __init__(self, name, MAX_ITER = 16, HORIZON = 1440):
+    def __init__(self, MAX_ITER = 16, HORIZON = 1440):
         self.MAX_ITER, self.HORIZON = MAX_ITER, HORIZON
 
         # log file
-        log_file_name = 'debug_'+name+'.log'
+        log_file_name = 'debug'+'.log'
         self.log = open(log_file_name, 'w')
 
         # number of sampling

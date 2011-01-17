@@ -9,9 +9,9 @@ class Road(Vector):
     """
     def __init__(self, name, head_node, tail_node, drive_time, capacity, toll = 0.0):
         super(Road, self).__init__(name)
-        self.head_node, self.tail_node, self.drive_time, self.capacity = \
-                        head_node, tail_node, drive_time, capacity
-		self.head_node.add_adjacent_vector(self)
+        self.head_node, self.tail_node, self.drive_time, self.capacity, self.toll = \
+                        head_node, tail_node, drive_time, capacity, toll 
+        self.head_node.add_adjacent_vector(self)
 
     def calc_travel_time(self, move_flow):
         if move_flow > self.capacity * 8:
