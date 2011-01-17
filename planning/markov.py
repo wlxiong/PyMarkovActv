@@ -108,12 +108,13 @@ def enum_path(timeslice, this_zone, next_zone):
 
 def enum_transition(commodity, timeslice, state):
     for next_actv in state.todo:
-        if next_actv == elem.home_pm_activity:
-            if len(state.todo) > 2:
+        if next_actv == elem.home_pm_activity and len(state.todo) > 2:
                 continue
-            location_set = [commodity.home]
         else:
-            location_set = next_actv.locations
+            if next_actv == elem.home_am_activity or next_actv == elem.home_pm_activity:
+                location_set = [commodity.home] 
+            else: 
+                location_set = next_actv.locations
         if next_actv <> state.activity:
             next_todo = state.todo.difference([state.activity])
         else:
