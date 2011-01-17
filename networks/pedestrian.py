@@ -20,7 +20,7 @@ class Sidewalk(Vector):
         self.travel_time = self.walk_time*(1.0 + .15*math.pow(move_flow/self.capacity, 4.0))
         return self.travel_time
 
-    def calc_travel_cost(self, walk_time, flow = None):
+    def calc_travel_cost(self, walk_time):
         return walk_time * conf.ALPHA_walk
 
 

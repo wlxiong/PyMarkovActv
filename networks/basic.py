@@ -44,10 +44,10 @@ class Vector(object):
     def __hash__(self):
         return int(hashlib.md5(repr(self)).hexdigest(), 16)
 
-    def calc_travel_time(self, move):
+    def calc_travel_time(self, move_flow):
         raise NotImplementedError
 
-    def calc_travel_cost(self, travel_time, move):
+    def calc_travel_cost(self, travel_time):
         raise NotImplementedError
 
 
