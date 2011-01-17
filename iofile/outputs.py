@@ -138,12 +138,20 @@ def export_travel_times(export):
             print>>export
     
 # export computational results
-def export_data(case):
-    export_file_name = 'export_data_'+case+'.txt'
-    export_file = open(export_file_name, 'w')
-    export_pattern_flow(export_file)
-    export_zone_passenger_raw(export_file)
-    export_zone_passenger(export_file)
+def export_data(case_name):
+	fout = open('../equil_flows_'+case_name+'.log', 'w')
+	export_configure(fout)
+	export_bundle_choice(fout)
+    export_activity_duration(fout)
+    export_zone_population(fout)
+    export_actv_population(fout)
+    export_state_flows(fout)
+    export_depart_flows(fout)
+    export_optimal_util(fout)
+	#    export_movement_flows(fout)
+	#    export_travel_times(fout)
+	fout.close()
+
 ##     export_aggreg_trip(export_file)
 ##     export_activity_trip(export_file)
 ##     export_passenger_trip(export_file)

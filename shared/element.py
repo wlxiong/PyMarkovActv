@@ -11,6 +11,8 @@ class Element(object):
         self.lines = {}
         # 1-dimension dict, i.e. walks[walk_id]
         self.walks = {}
+        # 1-dimension dict, i.e. roads[walk_id]
+        self.roads = {}
         # 1-dimension dict, i.e. nodes[node_id]
         self.nodes = {}
         

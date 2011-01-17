@@ -28,6 +28,11 @@ def add_sidewalk(key, head_name, tail_name, walk_time, capacity):
     head_node, tail_node = elem.nodes[head_name], elem.nodes[tail_name]
     elem.walks[key] = Sidewalk(sidewalk_name, head_node, tail_node, walk_time, capacity)
 
+def add_road(key, head_name, tail_name, drive_time, capacity):
+    road_name = 'RD' + str(key)
+    head_node, tail_node = elem.nodes[head_name], elem.nodes[tail_name]
+    elem.roads[key] = Road(road_name, head_node, tail_node, drive_time, capacity)
+
 def get_stop(key):
     "Return the stop with the given name, creating it if necessary. "
     if key not in elem.nodes:
