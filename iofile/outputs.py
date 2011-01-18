@@ -16,12 +16,10 @@ def export_activity_util(export):
 def export_OD_trips(export):
     print>>export, '\n-------- aggregate O-D trips ---------\n'
     for timeslice in xrange(min2slice(conf.DAY)):
-##            print>>export, " [%3d] " % s
             for O in elem.zone_list:
                 print>>export, " [%3d] " % timeslice,
                 for D in elem.zone_list:
                     print>>export, "\t %08.1f" % (flow.OD_trips[timeslice][O][D]),
-##                    print>>export, "%2d:%08.1f   " % (D, aggreg_trips[s][O][D]),
                 print>>export
 
 def export_depart_flows(export):
@@ -35,7 +33,6 @@ def export_depart_flows(export):
         for O in elem.zone_list:
             for D in elem.zone_list:
                 print>>export, "\t %08.1f" % (flow.OD_trips[timeslice][O][D]),
-##                    print>>export, "%2d:%08.1f   " % (D, aggreg_trips[s][O][D]),
         print>>export
     
 def export_state_flows(export):
@@ -82,7 +79,7 @@ def export_optimal_util(export):
     for comm in enum_commodity():
         print>>export, " commodity %s " % comm
         for timeslice in xrange(min2slice(conf.DAY)):
-            print>>export, " [%3d s] " % timeslice, 
+            print>>export, " [%3d] " % timeslice, 
             for state in enum_state(comm, timeslice):
                 print>>export, ("\t %s: %4.2f" % (state, util.state_optimal_util[comm][timeslice][state])), 
             print>>export
@@ -91,51 +88,63 @@ def export_optimal_util(export):
 def export_movement_flows(export):
     print>>export, '\n------movement flows------\n'
     sorted_moves = sorted(flow.movement_flows.keys(), key = repr)
-    max_bus_flow = float('-inf')
-    max_sub_flow = float('-inf')
+    max_bus_flow, max_sub_flow,max_hwy_flow, max_ped_flow = \
+        float('-inf'), float('-inf'), float('-inf'), float('-inf')
     for each_move in sorted_moves:
-        print>>export, each_move, flow.movement_flows[each_move]
+        print>>export, " %s\t%6.1f" % (each_move, flow.movement_flows[each_move])
         if each_move.related_edge.related_vector.capacity == conf.CAPACITY_bus:
             if max_bus_flow < flow.movement_flows[each_move]:
                 max_bus_flow = flow.movement_flows[each_move]
-        if each_move.related_edge.related_vector.capacity == conf.CAPACITY_sub:
+        elif each_move.related_edge.related_vector.capacity == conf.CAPACITY_sub:
             if max_sub_flow < flow.movement_flows[each_move]:
                 max_sub_flow = flow.movement_flows[each_move]
+        elif each_move.related_edge.related_vector.capacity == conf.CAPACITY_ped:
+            if max_ped_flow < flow.movement_flows[each_move]:
+                max_ped_flow = flow.movement_flows[each_move] 
+        else:
+            if max_hwy_flow < flow.movement_flows[each_move]:
+                max_hwy_flow = flow.movement_flows[each_move] 
     print>>export, " maximum transit line flows %6.1f png" % (max_bus_flow)
     print>>export, " maximum subway line flows %6.1f png" % (max_sub_flow)
+    print>>export, " maximum highway flows %6.1f png" % (max_hwy_flow)
+    print>>export, " maximum pedestrian flows %6.1f png" % (max_ped_flow)
 
 
 def export_bundle_choice(export):
     print>>export, '\n ------- bundle choice -------\n'
     for home in elem.home_list:
         print>>export, "[Home %s, Population %6.2f]" % (home, home.population)
+        print>>export, "Out-of-home utility\t %6.1f" % (util.out_of_home_util[home])
         print>>export, "%s \t %6.2f" % (elem.in_home_bundle, home.population * \
                                         prob.in_home_choice_prob[home])
         for bundle in elem.bundles.values():
             if bundle == elem.in_home_bundle:
                 continue
-            print>>export, "%s \t %6.2f" % (bundle, home.population * \
-                                            (1.0 - prob.in_home_choice_prob[home]) * \
-                                            prob.bundle_choice_prob[home][bundle])
+            print>>export, \
+                            "%s\t %6.1f" % (bundle, \
+                            home.population * \
+                            (1.0 - prob.in_home_choice_prob[home]) * \
+                            prob.bundle_choice_prob[home][bundle])
         print>>export
 
 def export_activity_duration(export):
     print>>export, '\n ------- activity duration -------\n'
     for comm in enum_commodity():
+        print>>export, " [%s] " % comm 
         average_duration = calc_average_activity_duration(comm)
         for key, value in average_duration.items():
-            print>>export, "%s: %.1f\t" % (key, value),
+            print>>export, "%s:\t%.1f\t" % (key, value),
         print>>export
 
-def export_travel_times(export):
-    print>>export, '\n ------- dynamic travel time -------\n'
-    for timeslice in xrange(min2slice(conf.DAY)):
-        print>>export, "[%d]" % timeslice
-        for origin in elem.zone_list:
-            print>>export, "(%s)  " % origin,
-            for dest in elem.zone_list:
-                print>>export, "%s: %3.2f  " % (dest, flow.dyna_travel_times[timeslice][origin][dest]),
-            print>>export
+# def export_travel_times(export):
+#     print>>export, '\n ------- dynamic travel time -------\n'
+#     for timeslice in xrange(min2slice(conf.DAY)):
+#         print>>export, "[%d]" % timeslice
+#         for origin in elem.zone_list:
+#             print>>export, "(%s)  " % origin,
+#             for dest in elem.zone_list:
+#                 print>>export, "%s: %3.2f  " % (dest, flow.dyna_travel_times[timeslice][origin][dest]),
+#             print>>export
     
 # export computational results
 def export_data(case_name):
@@ -147,9 +156,9 @@ def export_data(case_name):
     export_actv_population(fout)
     export_state_flows(fout)
     export_depart_flows(fout)
-    export_optimal_util(fout)
-    #    export_movement_flows(fout)
-    #    export_travel_times(fout)
+    # export_optimal_util(fout)
+    export_movement_flows(fout)
+    # export_travel_times(fout)
     fout.close()
 
 ##     export_aggreg_trip(export_file)

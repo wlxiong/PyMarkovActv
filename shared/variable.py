@@ -62,12 +62,12 @@ class FlowVar(object):
         # 1-dimension dict nested in 1-dimension list
         # i.e. actv_population[timeslice][actv]
         self.actv_population = []
-        # dynamic travel time between zones
-        # i.e. dyna_travel_times[timeslice][zone_a][zone_b]
-        self.dyna_travel_times = []
-        # static travel time between zones
-        # i.e. dyna_travel_times[zone_a][zone_b]
-        self.static_travel_times = {}
+        # # dynamic travel time between zones
+        # # i.e. dyna_travel_times[timeslice][zone_a][zone_b]
+        # self.dyna_travel_times = []
+        # # static travel time between zones
+        # # i.e. dyna_travel_times[zone_a][zone_b]
+        # self.static_travel_times = {}
 
         
         ## export to MATLAB

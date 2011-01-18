@@ -73,3 +73,6 @@ def init_movement_steps():
             for path in elem.paths[origin][dest]:
                 path.init_movements()
 
+def init_movement_flows():
+    flow.movement_flows = {}
+

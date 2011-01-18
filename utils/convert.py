@@ -13,12 +13,3 @@ def slice2min(timeslice):
         return timeslice
     return float(timeslice)*conf.TICK
 
-def main():
-    
-    print slice2min(3)
-    print min2slice(9)
-    
-    
-if __name__ == '__main__':
-    main()
-

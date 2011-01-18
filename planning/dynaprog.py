@@ -10,7 +10,7 @@ def calc_state_optimal_util():
     mlog = math.log
     # find the optimal uitility
     for comm in enum_commodity():
-        print ">>commodity %s" % comm
+        print "   commodity %s" % comm
         # backtrack from the ending to the beginning
         for timeslice in xrange(min2slice(conf.DAY)-1,-1,-1):
             for state in enum_state(comm, timeslice):
@@ -69,30 +69,3 @@ def calc_bundle_choice_prob():
             prob.bundle_choice_prob[home][bundle] = \
                 mexp(conf.THETA_bundle * util.commodity_optimal_util[out_of_home_commodity]) / \
                 mexp(conf.THETA_bundle * util.out_of_home_util[home])
-
-def main():
-    creat_line_4node()
-    creat_traffic_zone_4node()
-    creat_sidewalks_4node()
-    gen_path_set()
-
-
-    creat_activity_4node()
-    gen_activity_util()
-    creat_activity_pattern_4node()
-
-    init_state_util(float('-inf'))
-    init_choice_prob(0.0)
-    find_state_optimal_util()
-
-    fout = open('optimal_util.log', 'w')
-    export_optimal_util(fout)
-##     for p in patterns:
-##         print>>fout, patterns[p]
-##         print>>fout, '---------------------------'
-##         for dt in range(min2slice(DAY)):
-##             print>>fout, state_optimal_util[p][dt]
-
-if __name__ == '__main__':
-    main()
-

@@ -79,7 +79,7 @@ class Move(object):
                self.related_edge == other.related_edge
 
     def __repr__(self):
-        return "@%s-%s" % (self.timeslice, self.related_edge)
+        return "[%3d].%s" % (self.timeslice, self.related_edge)
 
     def __hash__(self):
         return int(hashlib.md5(repr(self)).hexdigest(), 16)

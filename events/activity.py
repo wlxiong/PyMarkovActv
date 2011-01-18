@@ -85,14 +85,3 @@ class Bundle(object):
     def __eq__(self, other):
         return self.name == other.name
 
-def main():
-    fout = open('activity_util.log', 'w')
-    creat_activity_4node()
-    gen_activity_util()
-    export_activity_util(fout)
-    creat_activity_pattern_4node()
-    for key, pattern in elem.patterns.items():
-        print key, pattern
- 
-if __name__ == '__main__':
-    main()

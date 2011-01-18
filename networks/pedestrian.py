@@ -23,14 +23,3 @@ class Sidewalk(Vector):
     def calc_travel_cost(self, walk_time):
         return walk_time * conf.ALPHA_walk
 
-
-
-
-##    def create_link(self, time):
-##        walk_time = self.travel_time
-##        head_grid = Grid(head_node, min2slice(time))
-##        tail_grid = Grid(tail_node, min2slice(time + walk_time))
-##        newlink = Link(self, head_grid, tail_grid)
-##        # add up travel time
-##        create_flow(newlink)
-##

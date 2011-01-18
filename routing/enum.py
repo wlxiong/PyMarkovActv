@@ -42,21 +42,3 @@ def find_all_path(start_node, end_node, thepath=Path()):
                     path_set.append(newpath)
     return path_set
 
-def main():
-    creat_line_4node()
-    creat_traffic_zone_4node()
-    creat_sidewalks_4node()
-    gen_path_set()
-
-    for origin in base.zone_list:
-        for dest in base.zone_list:
-            print origin, dest
-            for each_path in base.paths[origin][dest]:
-                print 
-                print each_path
-                print each_path.calc_travel_impedences(0)
-            print
-
-if __name__ == '__main__':
-    main()
-

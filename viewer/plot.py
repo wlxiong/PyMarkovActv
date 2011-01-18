@@ -51,13 +51,3 @@ def draw_zone_population(bar_width):
     ax.set_zlabel('Population')
     plt.show()
 
-def main():
-    creat_traffic_zone()
-    draw_zone_passenger(10)
-    draw_zone_passenger(5)
-    draw_zone_passenger(2)
-    plt.show()
-    
-if __name__ == '__main__':
-    main()
-    

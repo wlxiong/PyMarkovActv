@@ -44,20 +44,3 @@ class TransitLine(Vector):
         self.travel_cost = in_vehicle_time*(1.0 + .15*math.pow(move_flow/self.capacity, 4.0))
         return self.travel_cost
 
-
-def main():
-    creat_line_4node()
-    creat_traffic_zone_4node()
-    creat_sidewalks_4node()
-    for n in base.nodes:
-        print "%s" % n
-    for l in base.lines:
-        print "%s" % base.lines[l]
-        print base.lines[l].timetable
-    for w in base.walks:
-        print "%s" % w
-
-
-if __name__ == '__main__':
-    main()
-

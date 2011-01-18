@@ -18,10 +18,10 @@ def create_node_list():
             elem.zone_list.append(elem.nodes[n])
     # create home list
     for z in elem.zone_list:
+        # the determination of home location should be improved 
         if z.population > 1:
             elem.home_list.append(z)
     elem.zone_list.sort()
-    print "home_list %s" % elem.home_list
 
 #############################
 ###     6 node network
@@ -53,21 +53,21 @@ def creat_line_6node():
     pass
 
 def creat_road_6node():
-    add_road(1,     1,      3,      30,     3000/60.0)
-    add_road(2,     1,      5,      15,     2000/60.0)
-    add_road(3,     2,      5,      15,     2000/60.0)
-    add_road(4,     2,      4,      45,     4000/60.0)
-    add_road(5,     5,      6,      15,     3000/60.0)
-    add_road(6,     6,      3,      15,     2000/60.0)
-    add_road(7,     6,      4,      15,     2000/60.0)
+    add_road(1,     1,      3,      30,     3000/min2slice(60.0))
+    add_road(2,     1,      5,      15,     2000/min2slice(60.0))
+    add_road(3,     2,      5,      15,     2000/min2slice(60.0))
+    add_road(4,     2,      4,      45,     4000/min2slice(60.0))
+    add_road(5,     5,      6,      15,     3000/min2slice(60.0))
+    add_road(6,     6,      3,      15,     2000/min2slice(60.0))
+    add_road(7,     6,      4,      15,     2000/min2slice(60.0))
 
-    add_road(-1,    3,      1,      30,     3000/60.0)
-    add_road(-2,    5,      1,      15,     2000/60.0)
-    add_road(-3,    5,      2,      15,     2000/60.0)
-    add_road(-4,    4,      2,      45,     4000/60.0)
-    add_road(-5,    6,      5,      15,     3000/60.0)
-    add_road(-6,    3,      6,      15,     2000/60.0)
-    add_road(-7,    4,      6,      15,     2000/60.0)
+    add_road(-1,    3,      1,      30,     3000/min2slice(60.0))
+    add_road(-2,    5,      1,      15,     2000/min2slice(60.0))
+    add_road(-3,    5,      2,      15,     2000/min2slice(60.0))
+    add_road(-4,    4,      2,      45,     4000/min2slice(60.0))
+    add_road(-5,    6,      5,      15,     3000/min2slice(60.0))
+    add_road(-6,    3,      6,      15,     2000/min2slice(60.0))
+    add_road(-7,    4,      6,      15,     2000/min2slice(60.0))
 
 def creat_sidewalks_6node():
 #   add_sidewalk(key, head, tail, walk_time, capacity)
@@ -89,8 +89,8 @@ def creat_traffic_zone_6node():
 #   add_zone(key, activity_list, node_list, access_list, population)
     add_zone(10,   ['work'],              0)
     add_zone(20,   ['work'],              0)
-    add_zone(30,   ['home-am','home-pm'], 20000)
-    add_zone(40,   ['home-am','home-pm'], 30000)
+    add_zone(30,   ['home-am','home-pm'], 18000)
+    add_zone(40,   ['home-am','home-pm'], 12000)
     add_zone(50,   ['school'],            0)
     add_zone(60,   ['shopping'],          0)
     create_node_list()

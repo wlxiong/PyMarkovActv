@@ -33,14 +33,13 @@ class Commodity(object):
     
 class State(object):
     """ The state contains the position of the traveler (zone), the activity participated
-        and lagged variable (autoregressive process), excluding timeslice. 
+        and --lagged variable (autoregressive process)--, excluding timeslice. 
     """
-    def __init__(self, activity, zone, todo, lagged=0):
-        self.zone, self.activity, self.todo, self.lagged = \
-            zone, activity, todo, lagged
+    def __init__(self, activity, zone, todo):
+        self.zone, self.activity, self.todo = zone, activity, todo 
         
     def __repr__(self):
-        return "%s-%s(%s)-%d" % (self.zone, self.activity, sorted(self.todo), self.lagged)
+        return "%s-%s(%s)" % (self.zone, self.activity, sorted(self.todo))
         
     def __hash__(self):
         return int(hashlib.md5(repr(self)).hexdigest(), 16)
@@ -48,8 +47,7 @@ class State(object):
     def __eq__(self, other):
         return self.activity == other.activity and \
                self.zone == other.zone and \
-               self.todo == other.todo and \
-               self.lagged == other.lagged
+               self.todo == other.todo
 
     
 class Transition(object):
