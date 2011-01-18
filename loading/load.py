@@ -35,9 +35,9 @@ def calc_state_flows():
                     flow.transition_flows[comm][timeslice][state][transition] = \
                         flow.state_flows[comm][timeslice][state] * \
                         prob.transition_choice_prob[comm][timeslice][state][transition]
-#                    # add transition flows to edge steps
-#                    add_movement_step(transition.path, timeslice, \
-#                                  flow.transition_flows[comm][timeslice][state][transition])
+                    # add transition flows to edge steps
+                    add_movement_step(transition.path, timeslice, \
+                        flow.transition_flows[comm][timeslice][state][transition])
                     # update state flows
                     flow.state_flows[comm][starting_time][transition.state] = \
                         flow.state_flows[comm][starting_time][transition.state] + \
@@ -54,12 +54,3 @@ def calc_state_flows():
                     flow.OD_trips[timeslice][state.zone][transition.state.zone] = \
                         flow.OD_trips[timeslice][state.zone][transition.state.zone] + \
                         flow.transition_flows[comm][timeslice][state][transition]
-
-def main():
-    # main function
-    find_fixed_point()
-    
-if __name__ == '__main__':
-    main()
-    
-    
