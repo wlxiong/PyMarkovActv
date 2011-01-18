@@ -85,7 +85,7 @@ class Path(object):
             else:
                 # if the edge is NOT a transit line
                 each_vector = each_edge.related_vector
-                next_move = Move(min2slice(timeline), each_edge)
+                next_move = Move(timeline, each_edge)
                 self.moves_on_path[timeslice].append(next_move)
                 move_flow = get_move_flow(next_move)
                 travel_time = each_vector.calc_travel_time(move_flow)
