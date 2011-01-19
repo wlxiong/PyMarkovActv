@@ -72,6 +72,11 @@ class Path(object):
                 line = each_edge.related_vector
                 (arrival_time, wait_time) = line.calc_arrival_time(
                     slice2min(timeline), each_edge.head_node, each_edge.tail_node)
+                # when there is no public transport service at timeslice, return infinite travel time/cost 
+                if arrival_time == float('inf') or wait_time == float('inf'):
+                    self.path_travel_timeslice[timeslice] = float('inf')
+                    self.path_travel_cost[timeslice] = float('inf')
+                    return []
                 in_vehicle_time = arrival_time - slice2min(timeline) - wait_time
                 # create transit line move
                 line_move = Move(timeline + min2slice(wait_time), each_edge)
@@ -95,7 +100,7 @@ class Path(object):
         self.path_travel_timeslice[timeslice] = timeline - timeslice
         self.path_travel_cost[timeslice] = total_travel_cost
         return self.moves_on_path[timeslice]
-                
+
     def calc_travel_impedences(self, timeslice):
         self.get_movements(timeslice)
         # return two travel impedences: travel time (slice) and travel cost
