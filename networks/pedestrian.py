@@ -15,7 +15,7 @@ class Sidewalk(Vector):
 
     def calc_travel_time(self, move_flow):
         if move_flow > self.capacity * 8:
-            print self
+            print "%s: %s / %s" % (self, move_flow, self.capacity)
             raise PendingDeprecationWarning('Sidewalk capacity excess (8x)! ')
         self.travel_time = self.walk_time*(1.0 + .15*math.pow(move_flow/self.capacity, 4.0))
         return self.travel_time
