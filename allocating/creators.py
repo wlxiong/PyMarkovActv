@@ -1,8 +1,9 @@
 # create elements
 from shared.universe import elem
 from events.activity import Activity, Bundle
-from networks.basic import Node, Zone 
-from networks.motor import Road 
+from networks.basic import Node 
+from networks.motor import Road
+from networks.location import Zone, Home, Work 
 from networks.transit import Stop, TransitLine
 from networks.pedestrian import Sidewalk
 
@@ -12,6 +13,12 @@ def add_activity(name, U0, Um, Sigma, Lambda, Xi, \
     elem.activities[name] = Activity(name, U0, Um, Sigma, Lambda, Xi, \
                                      time_win, min_duration, \
                                      is_madatory, pref_timing)
+    if name == 'home-am':
+        elem.home_am_activity = elem.activities['home-am']
+    elif name == 'home-pm':
+        elem.home_pm_activity = elem.activities['home-pm']
+    elif name == 'work':
+        elem.work_activity = elem.activities['work']
 
 def add_bundle(key, activity_name_list):
     bundle_name = 'PN' + str(key)
@@ -33,11 +40,26 @@ def get_node(key):
         elem.nodes[key] = Node(node_name)
     return elem.nodes[key]
 
-def add_zone(key, activity_name_list, population):
+def add_zone(key, activity_name_list):
     zone_name = 'ZN' + str(key)
     activity_list = map(lambda actv_name: elem.activities[actv_name], activity_name_list)
-    # create this zone and add it to the node list 
-    elem.nodes[key] = Zone(zone_name, activity_list, population)
+    # add it to the node dict and zone list
+    elem.nodes[key] = Zone(zone_name, activity_list)
+    elem.zone_list.append(elem.nodes[key])
+    
+def add_home(key, capacity, rent):
+    home_name = 'HH' + str(key)
+    elem.nodes[key] = Home(home_name, [elem.home_am_activity, elem.home_pm_activity], capacity, rent)
+    # add it to the home and zone lists
+    elem.home_list.append(elem.nodes[key])
+    elem.zone_list.append(elem.nodes[key])
+
+def add_work(key, jobs, salary):
+    work_name = 'WW' + str(key)
+    elem.nodes[key] = Work(work_name, [elem.work_activity], jobs, salary)
+    # add it to the work and zone lists
+    elem.work_list.append(elem.nodes[key])
+    elem.zone_list.append(elem.nodes[key])
 
 def add_sidewalk(key, head_name, tail_name, walk_time, capacity):
     sidewalk_name = 'SW' + str(key)
