@@ -43,16 +43,19 @@ class Config(object):
         self.ALPHA_early = 30.0 * min2h
         # the unit cost of late arrival (dollar/hour)
         self.ALPHA_late = 90.0 * min2h
-        # the parameter related to making a trip or not
+        # the unit cost of house rent 
+        self.ALPHA_rent = 1.0
 
-        # the parameter related to travel or not 
+        # the parameter related to residential location 
+        self.THETA_location = 0.005
+        # the parameter related to making a trip or not
         self.THETA_travel = 0.01
         # the parameter related to pattern choice
         self.THETA_bundle = 0.02
         # the parameter related to tour choice
         self.THETA_tour = 0.05
         # the parameter related to path choice
-        self.THETA_path = 0.1
+        # self.THETA_path = 0.1
         # discount of future utility
         self.discount = 1.0
 
