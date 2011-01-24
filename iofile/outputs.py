@@ -1,7 +1,7 @@
 # export data to file
-from shared.universe import conf, elem, util, prob, flow
+from shared.universe import conf, elem, util, flow
 from utils.convert import min2slice
-from planning.markov import enum_commodity, enum_state
+from planning.markov import Commodity, enum_commodity, enum_state
 from stats.estimator import calc_average_activity_duration
 
 def export_activity_util(export):
@@ -110,22 +110,18 @@ def export_movement_flows(export):
     print>>export, " maximum pedestrian flows %6.1f png" % (max_ped_flow)
 
 
-def export_bundle_choice(export):
+def export_choice_volume(export):
     print>>export, '\n ------- bundle choice -------\n'
-    for home in elem.home_list:
-        print>>export, "[Home %s, Population %6.2f]" % (home, home.population)
-        print>>export, "Out-of-home utility\t %6.1f" % (util.out_of_home_util[home])
-        print>>export, "%s \t %6.2f" % (elem.in_home_bundle, home.population * \
-                                        prob.in_home_choice_prob[home])
-        for bundle in elem.bundles.values():
-            if bundle == elem.in_home_bundle:
-                continue
-            print>>export, \
-                            "%s\t %6.1f" % (bundle, \
-                            home.population * \
-                            (1.0 - prob.in_home_choice_prob[home]) * \
-                            prob.bundle_choice_prob[home][bundle])
-        print>>export
+    for work in elem.work_list: 
+        print>>export, "(Work %s, Jobs %6.1f)\n" % (work, work.jobs)
+        for home in elem.home_list: 
+            print>>export, "[Home %s, Population %6.1f]" % (home, flow.housing_flows[(work, home)])
+            print>>export, "[In-home]\t %6.1f" % (flow.in_home_flows[(work, home)])
+            print>>export, "[Out-of-home]\t %6.1f" % (flow.out_of_home_flows[(work, home)])
+            for bundle in elem.bundles.values():
+                comm = Commodity(work, home, bundle)
+                print>>export, "%s\t %6.1f" % (bundle, flow.commodity_flows[comm])
+            print>>export
 
 def export_activity_duration(export):
     print>>export, '\n ------- activity duration -------\n'
@@ -150,7 +146,7 @@ def export_activity_duration(export):
 def export_data(case_name):
     fout = open('../equil_flows_'+case_name+'.log', 'w')
     # export_configure(fout)
-    export_bundle_choice(fout)
+    export_choice_volume(fout)
     export_activity_duration(fout)
     export_zone_population(fout)
     export_actv_population(fout)

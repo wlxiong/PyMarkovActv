@@ -1,8 +1,8 @@
 # compute equilibrium flows
 from shared.universe import flow
 from utils.get import get_move_flow
-from planning.dynaprog import calc_state_optimal_util, calc_bundle_choice_prob
-from loading.load import calc_commodity_flow, calc_state_flows
+from planning.dynaprog import calc_state_optimal_util
+from loading.load import build_choice_model, calc_choice_volume, calc_state_flows
 from loading.init import init_movement_steps, init_movement_flows
 from loading.init import init_state_optimal_util, init_transition_choice_prob
 from loading.init import init_state_flows, init_transition_flows
@@ -19,7 +19,7 @@ def find_fixed_point(N):
     " Find the equilibrium flows using method of successive average (MSA). "
     # iterate demand and supply sides
     init_movement_flows()
-    print '\n\n INITIALZIE MOVEMENT FLOWS'
+    print '\n\n INITIALIZE MOVEMENT FLOWS'
     for iter_num in xrange(N): 
         
         print "\n  ### interation %d ###" % iter_num
@@ -34,10 +34,10 @@ def find_fixed_point(N):
         
         calc_state_optimal_util()
         print '  calc_state_optimal_util()'
-        calc_bundle_choice_prob()
+        build_choice_model()
+        print '  build_choice_model()'
+        calc_choice_volume()
         print '  calc_choice_prob()'
-        calc_commodity_flow()
-        print '  calc_commodity_flow()'
         
         print '\n [traffic assignment]'
         init_state_flows(0.0)

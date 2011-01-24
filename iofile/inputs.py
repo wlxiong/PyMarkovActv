@@ -1,27 +1,9 @@
 # import data
-import math 
 from shared.universe import conf, elem, flow
 from allocating.creators import add_activity, add_bundle
-from allocating.creators import add_line, add_road, add_zone, add_sidewalk
-from networks.basic import Zone
-from networks.transit import Stop
+from allocating.creators import add_line, add_road, add_zone, add_home, add_work, add_sidewalk
 from utils.convert import min2slice, slice2min
 
-def create_node_list():
-    # create stop list
-    for n in elem.nodes:
-        if isinstance(elem.nodes[n], Stop):
-            elem.stop_list.append(elem.nodes[n])
-    # create zone list
-    for n in elem.nodes:
-        if isinstance(elem.nodes[n], Zone):
-            elem.zone_list.append(elem.nodes[n])
-    # create home list
-    for z in elem.zone_list:
-        # the determination of home location should be improved 
-        if z.population > 1:
-            elem.home_list.append(z)
-    elem.zone_list.sort()
 
 #############################
 ###     6 node network
@@ -34,8 +16,6 @@ def creat_activity_6node():
     add_activity('work',       0.0,1000,  0.010, 1.0,   720, (0, 1440), 240, 1, 540)
     add_activity('school',     0.0, 160,  0.015, 1.0,   495, (0, 1440),  10, 0, -1)
     add_activity('shopping',   0.0, 400,  0.010, 1.0,  1170, (0, 1440),  10, 0, -1)
-    elem.home_am_activity = elem.activities['home-am']
-    elem.home_pm_activity = elem.activities['home-pm']
 
 def creat_activity_bundle_6node():
 #   add_bundle(key, activity_name_list)
@@ -86,14 +66,14 @@ def creat_sidewalks_6node():
     add_sidewalk(-13,    6,   60,    5,     conf.CAPACITY_ped)
 
 def creat_traffic_zone_6node():
-#   add_zone(key, activity_list, node_list, access_list, population)
-    add_zone(10,   ['work'],              0)
-    add_zone(20,   ['work'],              0)
-    add_zone(30,   ['home-am','home-pm'], 18000)
-    add_zone(40,   ['home-am','home-pm'], 12000)
-    add_zone(50,   ['school'],            0)
-    add_zone(60,   ['shopping'],          0)
-    create_node_list()
+#   add_zone(key, activity_list)
+    add_work(10,   12000, 12.0)
+    add_work(20,   18000, 10.0)
+    add_home(30,   10000, 20.0)
+    add_home(40,   20000, 15.0)
+    add_zone(50,   ['school'])
+    add_zone(60,   ['shopping'])
+    elem.zone_list.sort()
 
 
 #############################
@@ -108,8 +88,8 @@ def creat_activity_4node():
     add_activity('school',     0.0, 160,  0.015, 1.0,   495, (0, 1440),  10, 0, -1)
     add_activity('shopping',   0.0, 400,  0.010, 1.0,  1170, (0, 1440),  10, 0, -1)
     add_activity('restaurant', 0.0, 200,  0.030, 1.0,  1140, (0, 1440),  10, 0, -1)
-    elem.home_am_activity = elem.activities['home-am']
-    elem.home_pm_activity = elem.activities['home-pm']
+    # elem.home_am_activity = elem.activities['home-am']
+    # elem.home_pm_activity = elem.activities['home-pm']
 
 def creat_activity_bundle_4node():
 #   add_bundle(key, activity_name_list)
@@ -171,7 +151,7 @@ def creat_traffic_zone_4node():
     add_zone(20,   ['school'],            0)
     add_zone(30,   ['shopping', 'restaurant'],          0)
     add_zone(40,   ['work'],              0)
-    create_node_list()
+    elem.zone_list.sort()
 
 ###################################
 ### load data sets
