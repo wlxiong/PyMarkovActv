@@ -2,7 +2,9 @@
 from shared.universe import conf, elem, util, flow
 from utils.convert import min2slice
 from planning.markov import Commodity, enum_commodity, enum_state
-from stats.estimator import calc_average_activity_duration
+from stats.estimator import calc_average_activity_duration, calc_aggregate_flows
+from loading.init import init_OD_trips, init_zone_population, init_actv_population
+from stats.timer import print_current_time
 
 def export_activity_util(export):
     print>>export, '---------- activity utility ----------'
@@ -91,7 +93,7 @@ def export_movement_flows(export):
     max_bus_flow, max_sub_flow,max_hwy_flow, max_ped_flow = \
         float('-inf'), float('-inf'), float('-inf'), float('-inf')
     for each_move in sorted_moves:
-        print>>export, " %s\t%6.1f" % (each_move, flow.movement_flows[each_move])
+        # print>>export, " %s\t%6.1f" % (each_move, flow.movement_flows[each_move])
         if each_move.related_edge.related_vector.capacity == conf.CAPACITY_bus:
             if max_bus_flow < flow.movement_flows[each_move]:
                 max_bus_flow = flow.movement_flows[each_move]
@@ -141,6 +143,28 @@ def export_activity_duration(export):
 #             for dest in elem.zone_list:
 #                 print>>export, "%s: %3.2f  " % (dest, flow.dyna_travel_times[timeslice][origin][dest]),
 #             print>>export
+
+def export_aggregate_flows(export):
+    # prepare data
+    # initialize the aggregate flows
+    init_zone_population(0.0)
+    print '  init_zone_population(0.0)'
+    print_current_time()
+    init_actv_population(0.0)
+    print '  init_actv_population(0.0)'
+    print_current_time()
+    init_OD_trips(0.0)
+    print '  init_OD_trips(0.0)'
+    print_current_time()
+    # prepare the aggregate flows for output
+    calc_aggregate_flows()
+    print '  calc_aggregate_flows()'
+    print_current_time()
+    # export data
+    # export_OD_trips(fout)
+    # export_depart_flows(fout)
+    # export_zone_population(fout)
+    # export_actv_population(fout)
     
 # export computational results
 def export_data(case_name):
@@ -148,10 +172,8 @@ def export_data(case_name):
     # export_configure(fout)
     export_choice_volume(fout)
     export_activity_duration(fout)
-    export_zone_population(fout)
-    export_actv_population(fout)
-    export_state_flows(fout)
-    export_depart_flows(fout)
+    # export_aggregate_flows(fout)
+    # export_state_flows(fout)
     # export_optimal_util(fout)
     export_movement_flows(fout)
     # export_travel_times(fout)

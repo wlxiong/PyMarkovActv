@@ -1,6 +1,6 @@
 # some statistics for the simulation
 from shared.universe import conf, flow
-from planning.markov import enum_state
+from planning.markov import enum_commodity, enum_state, enum_transition
 from utils.convert import min2slice
 
 def calc_average_activity_duration(commodity):
@@ -18,6 +18,28 @@ def calc_average_activity_duration(commodity):
     nontravel_duration = sum(average_duration.values())
     average_duration['travel'] = 1440 - nontravel_duration
     return average_duration
+
+def calc_aggregate_flows():
+    # calculate aggregate flow variables based on transition flows
+    for comm in enum_commodity():
+        # from the beginning to the ending
+        for timeslice in xrange(min2slice(conf.DAY)):
+            for state in enum_state(comm, timeslice):
+                for transition_info in enum_transition(comm, timeslice, state):
+                    transition = transition_info[0]
+                    starting_time = transition_info[1]
+                    # calculate zone population
+                    flow.zone_population[starting_time][transition.state.zone] = \
+                        flow.zone_population[starting_time][transition.state.zone] + \
+                        flow.transition_flows[comm][timeslice][state][transition]
+                    # calculate activity population
+                    flow.actv_population[starting_time][transition.state.activity] = \
+                        flow.actv_population[starting_time][transition.state.activity] + \
+                        flow.transition_flows[comm][timeslice][state][transition]
+                    # calculate O-D trips
+                    flow.OD_trips[timeslice][state.zone][transition.state.zone] = \
+                        flow.OD_trips[timeslice][state.zone][transition.state.zone] + \
+                        flow.transition_flows[comm][timeslice][state][transition]
 
 def calc_activity_duration_variance():
     pass

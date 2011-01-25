@@ -70,8 +70,8 @@ def add_movement_step(path, timeslice, add_step):
 def calc_state_flows():
     # calculate flow variables based on state optimal utility
     for comm in enum_commodity():
-        print "   commodity %s" % comm
-        # backtrack from the ending to the beginning
+        print "    %s" % comm
+        # from the beginning to the ending
         for timeslice in xrange(min2slice(conf.DAY)):
             for state in enum_state(comm, timeslice):
                 for transition_info in enum_transition(comm, timeslice, state):
@@ -88,15 +88,15 @@ def calc_state_flows():
                     flow.state_flows[comm][starting_time][transition.state] = \
                         flow.state_flows[comm][starting_time][transition.state] + \
                         flow.transition_flows[comm][timeslice][state][transition]
-                    # update zone population
-                    flow.zone_population[starting_time][transition.state.zone] = \
-                        flow.zone_population[starting_time][transition.state.zone] + \
-                        flow.transition_flows[comm][timeslice][state][transition]
-                    # update activity population
-                    flow.actv_population[starting_time][transition.state.activity] = \
-                        flow.actv_population[starting_time][transition.state.activity] + \
-                        flow.transition_flows[comm][timeslice][state][transition]
-                    # update O-D trips
-                    flow.OD_trips[timeslice][state.zone][transition.state.zone] = \
-                        flow.OD_trips[timeslice][state.zone][transition.state.zone] + \
-                        flow.transition_flows[comm][timeslice][state][transition]
+                    # # update zone population
+                    # flow.zone_population[starting_time][transition.state.zone] = \
+                    #     flow.zone_population[starting_time][transition.state.zone] + \
+                    #     flow.transition_flows[comm][timeslice][state][transition]
+                    # # update activity population
+                    # flow.actv_population[starting_time][transition.state.activity] = \
+                    #     flow.actv_population[starting_time][transition.state.activity] + \
+                    #     flow.transition_flows[comm][timeslice][state][transition]
+                    # # update O-D trips
+                    # flow.OD_trips[timeslice][state.zone][transition.state.zone] = \
+                    #     flow.OD_trips[timeslice][state.zone][transition.state.zone] + \
+                    #     flow.transition_flows[comm][timeslice][state][transition]

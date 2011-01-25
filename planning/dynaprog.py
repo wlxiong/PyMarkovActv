@@ -11,7 +11,7 @@ def calc_state_optimal_util():
     mlog = math.log
     # find the optimal uitility
     for comm in enum_commodity():
-        print "   commodity %s" % comm
+        print "    %s" % comm
         # backtrack from the ending to the beginning
         for timeslice in xrange(min2slice(conf.DAY)-1,-1,-1):
             for state in enum_state(comm, timeslice):
