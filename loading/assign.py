@@ -19,7 +19,7 @@ def find_fixed_point(N):
     " Find the equilibrium flows using method of successive average (MSA). "
     # iterate demand and supply sides
     init_movement_flows()
-    print '\n\n INITIALIZE MOVEMENT FLOWS'
+    print '\n init_movement_flows()'
     for iter_num in xrange(N): 
         
         print "\n  ### interation %d ###" % iter_num
@@ -37,7 +37,7 @@ def find_fixed_point(N):
         build_choice_model()
         print '  build_choice_model()'
         calc_choice_volume()
-        print '  calc_choice_prob()'
+        print '  calc_choice_volume()'
         
         print '\n [traffic assignment]'
         init_state_flows(0.0)
@@ -54,4 +54,4 @@ def find_fixed_point(N):
         calc_state_flows()
         print '  calc_state_flows()'
         update_movement_flows(iter_num)
-        print "  update_move_flows(%d)" % iter_num
+        print "  update_movement_flows(%d)" % iter_num
