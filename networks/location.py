@@ -13,9 +13,9 @@ class Zone(Node):
 
 class Home(Zone):
     "A home is a zone that people can reside at. "
-    def __init__(self, name, activity_list, capacity, rent):
+    def __init__(self, name, activity_list, houses, rent):
         super(Home, self).__init__(name, activity_list)
-        self.capacity, self.rent = capacity, rent
+        self.houses, self.rent = houses, rent
 
 
 class Work(Zone):

@@ -47,9 +47,9 @@ def add_zone(key, activity_name_list):
     elem.nodes[key] = Zone(zone_name, activity_list)
     elem.zone_list.append(elem.nodes[key])
     
-def add_home(key, capacity, rent):
+def add_home(key, houses, rent):
     home_name = 'HH' + str(key)
-    elem.nodes[key] = Home(home_name, [elem.home_am_activity, elem.home_pm_activity], capacity, rent)
+    elem.nodes[key] = Home(home_name, [elem.home_am_activity, elem.home_pm_activity], houses, rent)
     # add it to the home and zone lists
     elem.home_list.append(elem.nodes[key])
     elem.zone_list.append(elem.nodes[key])

@@ -41,6 +41,7 @@ def main():
     gen_path_set()
     print '\n LOAD DATA'
     print_current_time()
+    
     # run multiple scenarios
     run_multi_scenarios(case_name, 30000, 30000)
     
