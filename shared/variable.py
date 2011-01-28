@@ -46,7 +46,7 @@ class FlowVar(object):
     def __init__(self):
         
         # assginment
-        # 1-dimension dict, i.e. link_flows[move]
+        # 1-dimension dict, i.e. movement_flows[move]
         self.movement_flows = {}
         self.movement_steps = {}
         # 4-dimension nested dict
@@ -57,12 +57,14 @@ class FlowVar(object):
         self.state_flows = {}
         # 1-dimension dict, i.e. commodity_flows[commodity]
         self.commodity_flows = {}
+        self.commodity_steps = {}
         # 1-dimension dict, i.e. in_home_flows[(work, home)]
         self.in_home_flows = {}
         # 1-dimension dict, i.e. out_of_home_flows[(work, home)]
         self.out_of_home_flows = {}
         # 1-dimension dict, i.e. housing_flows[(work, home)]
         self.housing_flows = {}
+        self.housing_steps = {}
         # 3-dimension nested dict
         # i.e. OD_trips[timeslice][origin][destination]
         self.OD_trips = {}

@@ -9,17 +9,17 @@ from allocating.generators import gen_activity_util, gen_path_set
 from stats.timer import print_current_time
 
 def run_multi_scenarios(case_name, total_population, max_capacity):
-    step = max_capacity/1
-    for capacity_list in product(range(0,max_capacity+1,step), repeat=len(elem.home_list)):
-        if sum(capacity_list) < total_population:
+    step = max_capacity/10
+    for capacity_list in product(range(step,max_capacity,step), repeat=len(elem.home_list)):
+        if sum(capacity_list) <> total_population:
             continue
-        for home, capacity in zip(elem.home_list, capacity_list):
-            home.capacity = capacity
+        for home, houses in zip(elem.home_list, capacity_list):
+            home.houses = houses
         print '\n  *** Housing Supply ***'
         print ' %s \n' % zip(elem.home_list, capacity_list)
 
         # run the iterative procedure 
-        find_fixed_point(1)
+        find_fixed_point(4)
 
         # output the raw results
         export_data(case_name+'_'+str(capacity_list))
@@ -47,5 +47,5 @@ def main():
     
 if __name__ == '__main__':
     import sys
-    sys.path.append('/Users/xiongyiliang/Workspace/Research/PyMarkovActv/src/')
+    # sys.path.append('/Users/xiongyiliang/Workspace/Research/PyMarkovActv/src/')
     main()

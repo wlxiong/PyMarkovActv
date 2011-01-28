@@ -24,7 +24,7 @@ def init_state_flows(init_value):
                 flow.state_flows[comm][timeslice][state] = init_value
     # initialize the population at timeslice 0 for each zone
     for comm in enum_commodity():
-        flow.state_flows[comm][0][comm.init_state] = flow.commodity_flows[comm]
+        flow.state_flows[comm][0][comm.init_state] = flow.commodity_steps[comm]
 
 def init_transition_flows(init_value):
     flow.transition_flows = {}
@@ -73,13 +73,24 @@ def init_actv_population(init_value):
         for each_actv in elem.activities.values():
             flow.actv_population[timeslice][each_actv] = init_value
 
-def init_movement_steps():
-    flow.movement_steps = {}
+def init_step_variables():
+    # clear movements in each path
     for origin in elem.zone_list:
         for dest in elem.zone_list:
             for path in elem.paths[origin][dest]:
                 path.init_movements()
+    flow.movement_steps = {}
+    flow.commodity_steps = {}
+    flow.housing_steps = {}
 
-def init_movement_flows():
+def init_flow_variables():
     flow.movement_flows = {}
-
+    
+    flow.commodity_flows = {}
+    for comm in enum_commodity():
+        flow.commodity_flows[comm] = 0.0
+        
+    flow.housing_flows = {}
+    for home in elem.home_list:
+        for work in elem.work_list:
+            flow.housing_flows[(work, home)] = work.jobs * float(len(elem.home_list))
