@@ -2,30 +2,40 @@
 
 class UtilVar(object):
     def __init__(self):
-        # 1-dimension dict nested in 1-dimension list, 
+        # 2-dimension nested dict 
         # i.e. activity_util[timeslice][activity_name]
-        self.activity_util = []
-        # 1-dimension dict nested in 1-dimension list, and then in a dict
+        self.activity_util = {}
+        # 3-dimension nested dict
         # i.e. state_optimal_util[commodity][timeslice][state]
         # the expected maximum utility: E{max_d {V_d} }
         self.state_optimal_util = {}
         # 1-dimension dict, i.e. commodity_optimal_util[commodity]
         self.commodity_optimal_util = {}
         # expected utility for all out-of-home patterns
-        # 1-dimension dict, i.e. out_of_home_util[home]
+        # 1-dimension dict, i.e. out_of_home_util[(work, home)]
         self.out_of_home_util = {}
         # expected utility for in-home pattern
-        # 1-dimension dict, i.e. in_home_util[home]
+        # 1-dimension dict, i.e. in_home_util[(work, home)]
         self.in_home_util = {}
+        # expected utility for residential location 
+        # 1-dimension dict, i.e. housing_util[(work, home)]
+        self.housing_util = {}
 
 
 class ProbVar(object):
     def __init__(self):
+        # residential location choice probability
+        # 1-dimension choice probability, i.e. housing_choice_prob[(work, home)]
+        self.housing_choice_prob = {}
         # in-home pattern choice probability
+        # 1-dimension dict, i.e. in_home_choice_prob[(work, home)]
         self.in_home_choice_prob = {}
-        # 1-dimension dict, i.e. bundle_choice_prob[home][pattern]
-        self.bundle_choice_prob = {}
-        # 2-dimension dict nested in 1-dimension list, and then in a dict
+        # out-of-home pattern choice probability 
+        # 1-dimension dict, i.e. out_of_home_choice_prob[(work, home)]
+        self.out_of_home_choice_prob = {}
+        # 1-dimension dict, i.e. commodity_choice_probc[comm]
+        self.commodity_choice_prob = {}
+        # 4-dimension nested dict
         # i.e. transition_choice_prob[commodity][timeslice][state][transition]
         self.transition_choice_prob = {}
 
@@ -36,40 +46,35 @@ class FlowVar(object):
     def __init__(self):
         
         # assginment
-        # 1-dimension dict, i.e. link_flows[move]
+        # 1-dimension dict, i.e. movement_flows[move]
         self.movement_flows = {}
         self.movement_steps = {}
-        # 2-dimension dict nested in 1-dimension list, and then in a dict
+        # 4-dimension nested dict
         # i.e. transition_flows[commodity][timeslice][state][transition]
         self.transition_flows = {}
-##        # 2-dimension dict nested in 1-dimension list, and then in a dict
-##        # i.e. transition_flows[commodity][timeslice][state][transition]
-##        self.transition_flows = {}
-##        # 1-dimension dict nested in 1-dimension list, 
-##        # i.e. commodity_flows[commodity][timeslice]
-##        self.commodity_flows = {}
-        # 1-dimension dict nested in 1-dimension list, and then in a dict
+        # 3-dimension nested dict
         # i.e. state_flows[commodity][timeslice][state]
         self.state_flows = {}
         # 1-dimension dict, i.e. commodity_flows[commodity]
         self.commodity_flows = {}
-        # 2-dimension dict nested in 1-dimension list
+        self.commodity_steps = {}
+        # 1-dimension dict, i.e. in_home_flows[(work, home)]
+        self.in_home_flows = {}
+        # 1-dimension dict, i.e. out_of_home_flows[(work, home)]
+        self.out_of_home_flows = {}
+        # 1-dimension dict, i.e. housing_flows[(work, home)]
+        self.housing_flows = {}
+        self.housing_steps = {}
+        # 3-dimension nested dict
         # i.e. OD_trips[timeslice][origin][destination]
-        self.OD_trips = []
-        # 1-dimension dict nested in 1-dimension list
+        self.OD_trips = {}
+        # 2-dimension nested dict
         # i.e. zone_population[timeslice][zone]
-        self.zone_population = []
-        # 1-dimension dict nested in 1-dimension list
+        self.zone_population = {}
+        # 2-dimension nested dict
         # i.e. actv_population[timeslice][actv]
-        self.actv_population = []
-        # # dynamic travel time between zones
-        # # i.e. dyna_travel_times[timeslice][zone_a][zone_b]
-        # self.dyna_travel_times = []
-        # # static travel time between zones
-        # # i.e. dyna_travel_times[zone_a][zone_b]
-        # self.static_travel_times = {}
+        self.actv_population = {}
 
-        
         ## export to MATLAB
         ## mat_pattern_flow = [None] * num_sample
         ## mat_zone_passenger = [None] * num_sample

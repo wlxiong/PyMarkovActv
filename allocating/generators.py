@@ -5,7 +5,7 @@ from routing.enum import find_all_path
 
 def gen_activity_util():
     for timeslice in xrange(min2slice(conf.DAY)+1):
-        util.activity_util.append(dict() )
+        util.activity_util[timeslice] = {}
         for activity in elem.activities.values():
             util.activity_util[timeslice][activity] = activity.discrete_util(timeslice)
 

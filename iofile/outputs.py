@@ -1,8 +1,11 @@
 # export data to file
-from shared.universe import conf, elem, util, prob, flow
+from shared.universe import conf, elem, util, flow
 from utils.convert import min2slice
-from planning.markov import enum_commodity, enum_state
-from stats.estimator import calc_average_activity_duration
+from planning.markov import Commodity, enum_commodity, enum_state
+from stats.estimator import calc_average_activity_duration, calc_aggregate_flows
+from stats.environment import calc_total_emission
+from loading.init import init_OD_trips, init_zone_population, init_actv_population
+from stats.timer import print_current_time
 
 def export_activity_util(export):
     print>>export, '---------- activity utility ----------'
@@ -91,7 +94,7 @@ def export_movement_flows(export):
     max_bus_flow, max_sub_flow,max_hwy_flow, max_ped_flow = \
         float('-inf'), float('-inf'), float('-inf'), float('-inf')
     for each_move in sorted_moves:
-        print>>export, " %s\t%6.1f" % (each_move, flow.movement_flows[each_move])
+        # print>>export, " %s\t%6.1f" % (each_move, flow.movement_flows[each_move])
         if each_move.related_edge.related_vector.capacity == conf.CAPACITY_bus:
             if max_bus_flow < flow.movement_flows[each_move]:
                 max_bus_flow = flow.movement_flows[each_move]
@@ -110,22 +113,19 @@ def export_movement_flows(export):
     print>>export, " maximum pedestrian flows %6.1f png" % (max_ped_flow)
 
 
-def export_bundle_choice(export):
+def export_choice_volume(export):
     print>>export, '\n ------- bundle choice -------\n'
-    for home in elem.home_list:
-        print>>export, "[Home %s, Population %6.2f]" % (home, home.population)
-        print>>export, "Out-of-home utility\t %6.1f" % (util.out_of_home_util[home])
-        print>>export, "%s \t %6.2f" % (elem.in_home_bundle, home.population * \
-                                        prob.in_home_choice_prob[home])
-        for bundle in elem.bundles.values():
-            if bundle == elem.in_home_bundle:
-                continue
-            print>>export, \
-                            "%s\t %6.1f" % (bundle, \
-                            home.population * \
-                            (1.0 - prob.in_home_choice_prob[home]) * \
-                            prob.bundle_choice_prob[home][bundle])
-        print>>export
+    for work in elem.work_list: 
+        print>>export, "(Work %s, Jobs %6.1f)\n" % (work, work.jobs)
+        for home in elem.home_list: 
+            print>>export, "[Home %s, Population %6.1f]" % (home, flow.housing_flows[(work, home)])
+            # print>>export, "[In-home]\t %6.1f" % (flow.in_home_flows[(work, home)])
+            # print>>export, "[Out-of-home]\t %6.1f" % (flow.out_of_home_flows[(work, home)])
+            print>>export, "[Daily Activity Utility]\t %6.1f" % (util.housing_util[(work, home)])
+            for bundle in elem.bundles.values():
+                comm = Commodity(work, home, bundle)
+                print>>export, "%s\t %6.1f" % (bundle, flow.commodity_flows[comm])
+            print>>export
 
 def export_activity_duration(export):
     print>>export, '\n ------- activity duration -------\n'
@@ -145,19 +145,44 @@ def export_activity_duration(export):
 #             for dest in elem.zone_list:
 #                 print>>export, "%s: %3.2f  " % (dest, flow.dyna_travel_times[timeslice][origin][dest]),
 #             print>>export
-    
+
+def export_aggregate_flows(export):
+    # prepare data
+    # initialize the aggregate flows
+    init_zone_population(0.0)
+    print '  init_zone_population(0.0)'
+    print_current_time()
+    init_actv_population(0.0)
+    print '  init_actv_population(0.0)'
+    print_current_time()
+    init_OD_trips(0.0)
+    print '  init_OD_trips(0.0)'
+    print_current_time()
+    # prepare the aggregate flows for output
+    calc_aggregate_flows()
+    print '  calc_aggregate_flows()'
+    print_current_time()
+    # export data
+    # export_OD_trips(fout)
+    # export_depart_flows(fout)
+    # export_zone_population(fout)
+    # export_actv_population(fout)
+
+def export_total_emission(export):
+    print>>export, '\n ------- vehicle emission -------\n'
+    print>>export, calc_total_emission()
+
 # export computational results
 def export_data(case_name):
     fout = open('../equil_flows_'+case_name+'.log', 'w')
     # export_configure(fout)
-    export_bundle_choice(fout)
+    export_choice_volume(fout)
     export_activity_duration(fout)
-    export_zone_population(fout)
-    export_actv_population(fout)
-    export_state_flows(fout)
-    export_depart_flows(fout)
+    # export_aggregate_flows(fout)
+    # export_state_flows(fout)
     # export_optimal_util(fout)
     export_movement_flows(fout)
+    export_total_emission(fout)
     # export_travel_times(fout)
     fout.close()
 

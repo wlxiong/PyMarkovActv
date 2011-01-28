@@ -18,16 +18,6 @@ class Node(object):
 
     def add_adjacent_vector(self, vector):
         self.adjacent_vectors.append(vector)
-        
-    
-class Zone(Node):
-    "A zone is a area where people participate various activities. "
-    def __init__(self, name, activity_list, population):
-        super(Zone, self).__init__(name)
-        self.involved_activities = activity_list
-        for each_actv in self.involved_activities:
-            each_actv.add_location(self)
-        self.population = population
 
 
 class Vector(object):

@@ -15,20 +15,23 @@ from itertools import combinations
 
 class Commodity(object):
     """ The passengers choosing each activity bundles at every residential location (home)
-        is a commodity. Or the activity bundles are enumerated implicitly. """
-    def __init__(self, home, bundle):
-        self.home, self.bundle = home, bundle
+        and place of work (work) is a commodity. Or the activity bundles are enumerated implicitly. 
+    """
+    def __init__(self, work, home, bundle):
+        self.work, self.home, self.bundle = work, home, bundle
         self.init_state = State(elem.home_am_activity, self.home, self.bundle.activity_set)
         self.term_state = State(elem.home_pm_activity, self.home, frozenset([elem.home_pm_activity]))
         
     def __repr__(self):
-        return "%s-%s" % (self.home, self.bundle)
+        return "(%s-%s).%s" % (self.work, self.home, self.bundle)
         
     def __hash__(self):
         return int(hashlib.md5(repr(self)).hexdigest(), 16)
         
     def __eq__(self, other):
-        return self.home == other.home and self.bundle == other.bundle
+        return self.work == other.work and \
+               self.home == other.home and \
+               self.bundle == other.bundle
 
     
 class State(object):
@@ -67,10 +70,11 @@ class Transition(object):
                self.path == other.path
 
 def enum_commodity():
-    # for different home location and activity bundles
-    for home in elem.home_list:
-        for bundle in elem.bundles.values():
-            yield Commodity(home, bundle)
+    # for different work-home location and activity bundles
+    for work in elem.work_list:
+        for home in elem.home_list:
+            for bundle in elem.bundles.values():
+                yield Commodity(work, home, bundle)
 
 def enum_state(commodity, timeslice):
     activity_bundle = commodity.bundle.activity_set
@@ -110,7 +114,9 @@ def enum_transition(commodity, timeslice, state):
                 continue
         else:
             if next_actv == elem.home_am_activity or next_actv == elem.home_pm_activity:
-                location_set = [commodity.home] 
+                location_set = [commodity.home]
+            elif next_actv == elem.work_activity:
+                location_set = [commodity.work]
             else: 
                 location_set = next_actv.locations
         if next_actv <> state.activity:

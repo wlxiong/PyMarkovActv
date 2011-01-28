@@ -8,9 +8,15 @@ from networks.transit import TransitLine
 
 class Path(object):
     "A path in transport network is a ordered set of nodes. "
-    def __init__(self, node_list=[], edge_list=[]):
-        self.nodes_on_path = node_list
-        self.edges_on_path = edge_list
+    def __init__(self, node_list=None, edge_list=None):
+        if node_list == None:
+            self.nodes_on_path = []
+        else:
+            self.nodes_on_path = node_list
+        if edge_list == None:
+            self.edges_on_path = []
+        else:
+            self.edges_on_path = edge_list
         self.moves_on_path = {}
         self.path_travel_timeslice = {}
         self.path_travel_cost = {}
