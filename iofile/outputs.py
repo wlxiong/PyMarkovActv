@@ -3,6 +3,7 @@ from shared.universe import conf, elem, util, flow
 from utils.convert import min2slice
 from planning.markov import Commodity, enum_commodity, enum_state
 from stats.estimator import calc_average_activity_duration, calc_aggregate_flows
+from stats.environment import calc_total_emission
 from loading.init import init_OD_trips, init_zone_population, init_actv_population
 from stats.timer import print_current_time
 
@@ -118,8 +119,9 @@ def export_choice_volume(export):
         print>>export, "(Work %s, Jobs %6.1f)\n" % (work, work.jobs)
         for home in elem.home_list: 
             print>>export, "[Home %s, Population %6.1f]" % (home, flow.housing_flows[(work, home)])
-            print>>export, "[In-home]\t %6.1f" % (flow.in_home_flows[(work, home)])
-            print>>export, "[Out-of-home]\t %6.1f" % (flow.out_of_home_flows[(work, home)])
+            # print>>export, "[In-home]\t %6.1f" % (flow.in_home_flows[(work, home)])
+            # print>>export, "[Out-of-home]\t %6.1f" % (flow.out_of_home_flows[(work, home)])
+            print>>export, "[Daily Activity Utility]\t %6.1f" % (util.housing_util[(work, home)])
             for bundle in elem.bundles.values():
                 comm = Commodity(work, home, bundle)
                 print>>export, "%s\t %6.1f" % (bundle, flow.commodity_flows[comm])
@@ -165,7 +167,11 @@ def export_aggregate_flows(export):
     # export_depart_flows(fout)
     # export_zone_population(fout)
     # export_actv_population(fout)
-    
+
+def export_total_emission(export):
+    print>>export, '\n ------- vehicle emission -------\n'
+    print>>export, calc_total_emission()
+
 # export computational results
 def export_data(case_name):
     fout = open('../equil_flows_'+case_name+'.log', 'w')
@@ -176,6 +182,7 @@ def export_data(case_name):
     # export_state_flows(fout)
     # export_optimal_util(fout)
     export_movement_flows(fout)
+    export_total_emission(fout)
     # export_travel_times(fout)
     fout.close()
 
