@@ -4,7 +4,7 @@ class Config(object):
     # length of a single day
     DAY = 1440
     # minutes per tick
-    TICK = 15
+    TICK = 20
     def __init__(self, MAX_ITER = 16, HORIZON = 1440):
         self.MAX_ITER, self.HORIZON = MAX_ITER, HORIZON
 
@@ -47,13 +47,13 @@ class Config(object):
         self.ALPHA_rent = 1.0
 
         # the parameter related to residential location 
-        self.THETA_location = 0.005
+        self.THETA_location = 0.01
         # the parameter related to making a trip or not
-        self.THETA_travel = 0.01
+        self.THETA_travel = 0.02
         # the parameter related to pattern choice
-        self.THETA_bundle = 0.02
+        self.THETA_bundle = 0.05
         # the parameter related to tour choice
-        self.THETA_tour = 0.05
+        self.THETA_tour = 0.1
         # the parameter related to path choice
         # self.THETA_path = 0.1
         # discount of future utility

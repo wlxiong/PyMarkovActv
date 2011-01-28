@@ -68,12 +68,12 @@ def add_sidewalk(key, head_name, tail_name, walk_time, capacity):
     head_node, tail_node = elem.nodes[head_name], elem.nodes[tail_name]
     elem.walks[key] = Sidewalk(sidewalk_name, head_node, tail_node, walk_time, capacity)
 
-def add_road(key, head_name, tail_name, drive_time, capacity):
+def add_road(key, head_name, tail_name, drive_time, capacity, length):
     road_name = 'RD' + str(key)
     get_node(head_name)
     get_node(tail_name)
     head_node, tail_node = elem.nodes[head_name], elem.nodes[tail_name]
-    elem.roads[key] = Road(road_name, head_node, tail_node, drive_time, capacity)
+    elem.roads[key] = Road(road_name, head_node, tail_node, drive_time, capacity, length)
 
 def gen_timetable(offset, headway, dwell_time, total_run, in_vehicle_time):
     " Generate the timetable with given parameters. "

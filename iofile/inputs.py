@@ -1,8 +1,7 @@
 # import data
-from shared.universe import conf, elem, flow
+from shared.universe import conf, elem
 from allocating.creators import add_activity, add_bundle
 from allocating.creators import add_line, add_road, add_zone, add_home, add_work, add_sidewalk
-from utils.convert import min2slice, slice2min
 
 
 #############################
@@ -33,21 +32,21 @@ def creat_line_6node():
     pass
 
 def creat_road_6node():
-    add_road(1,     1,      3,      30,     3000/min2slice(60.0))
-    add_road(2,     1,      5,      15,     2000/min2slice(60.0))
-    add_road(3,     2,      5,      15,     2000/min2slice(60.0))
-    add_road(4,     2,      4,      45,     4000/min2slice(60.0))
-    add_road(5,     5,      6,      15,     3000/min2slice(60.0))
-    add_road(6,     6,      3,      15,     2000/min2slice(60.0))
-    add_road(7,     6,      4,      15,     2000/min2slice(60.0))
-
-    add_road(-1,    3,      1,      30,     3000/min2slice(60.0))
-    add_road(-2,    5,      1,      15,     2000/min2slice(60.0))
-    add_road(-3,    5,      2,      15,     2000/min2slice(60.0))
-    add_road(-4,    4,      2,      45,     4000/min2slice(60.0))
-    add_road(-5,    6,      5,      15,     3000/min2slice(60.0))
-    add_road(-6,    3,      6,      15,     2000/min2slice(60.0))
-    add_road(-7,    4,      6,      15,     2000/min2slice(60.0))
+    add_road(1,     1,      3,      40,     3000, 40.0)
+    add_road(2,     1,      5,      20,     2000, 15.0)
+    add_road(3,     2,      5,      20,     2000, 15.0)
+    add_road(4,     2,      4,      60,     4000, 50.0)
+    add_road(5,     5,      6,      20,     3000, 20.0)
+    add_road(6,     6,      3,      20,     2000, 20.0)
+    add_road(7,     6,      4,      20,     2000, 20.0)
+                                                
+    add_road(-1,    3,      1,      40,     3000, 40.0)
+    add_road(-2,    5,      1,      20,     2000, 15.0)
+    add_road(-3,    5,      2,      20,     2000, 15.0)
+    add_road(-4,    4,      2,      60,     4000, 50.0)
+    add_road(-5,    6,      5,      20,     3000, 20.0)
+    add_road(-6,    3,      6,      20,     2000, 20.0)
+    add_road(-7,    4,      6,      20,     2000, 20.0)
 
 def creat_sidewalks_6node():
 #   add_sidewalk(key, head, tail, walk_time, capacity)
@@ -69,8 +68,8 @@ def creat_traffic_zone_6node():
 #   add_zone(key, activity_list)
     add_work(10,   12000, 12.0)
     add_work(20,   18000, 10.0)
-    add_home(30,   10000, 20.0)
-    add_home(40,   20000, 15.0)
+    add_home(30,   10000, 0.0)
+    add_home(40,   20000, 0.0)
     add_zone(50,   ['school'])
     add_zone(60,   ['shopping'])
     elem.zone_list.sort()
