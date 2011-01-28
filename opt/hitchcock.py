@@ -2,7 +2,7 @@
 from pulp import makeDict, LpProblem, LpMinimize, LpContinuous, LpVariable, LpStatus, lpSum, value
 
 class TransProblem(object):
-    def __init__(self, home_list, work_list, utils):
+    def __init__(self, home_list, work_list, util_matrix):
         """ Input a list of utils
             utils = [   #Works
                     #1 2 3 4 5
@@ -10,21 +10,22 @@ class TransProblem(object):
                     [3,1,3,2,3] #B
                     ]
         """
+        self.util_matrix = util_matrix
         self.homes = dict((home, home.houses) for home in home_list)
         self.works = dict((work, work.jobs) for work in work_list)
-        self.utils = makeDict([home_list, work_list], utils, 0)
+        self.utils = makeDict([home_list, work_list], util_matrix, 0)
 
         # Creates the 'prob' variable to contain the problem data
         self.prob = LpProblem("Residential Location Choice Problem",LpMinimize)
 
         # Creates a list of tuples containing all the possible location choices
-        self.choices = [(h, w) for h in self.homes.keys() for w in self.works.keys()]
+        self.choices = [(h, w) for h in self.homes for w in self.works.keys()]
 
         # A dictionary called 'volumes' is created to contain the referenced variables(the choices)
         self.volumes = LpVariable.dicts("choice",(self.homes,self.works),0,None,LpContinuous)
 
         # The objective function is added to 'prob' first
-        self.prob += lpSum([self.volumes[h][w]*self.utils[h][w] for (h,w) in self.choices]), "Sum_of_Transporting_Costs"
+        self.prob += lpSum([self.volumes[h][w] * self.utils[h][w] for (h,w) in self.choices]), "Sum_of_Transporting_Costs"
 
         # The supply maximum constraints are added to prob for each supply node (home)
         for h in self.homes:
@@ -40,16 +41,29 @@ class TransProblem(object):
 
         # The problem is solved using PuLP's choice of Solver
         self.prob.solve()
-
+        
+        # print the utility matrix
+        print "Utility Matrix", self.util_matrix
+        
         # The status of the solution is printed to the screen
         print "Status:", LpStatus[self.prob.status]
-
-        # Each of the variables is printed with it's resolved optimum value
-        for vol in self.prob.variables():
-            print vol.name, "=", vol.varValue
-
-        # The optimised objective function value is printed to the screen    
+    
+        # The optimised objective function value is printed to the screen
         print "Total Utility = ", value(self.prob.objective)
+
+    def get_solution(self):
+        # put the solution variables into a dict 
+        sol_var = {}
+        for vol in self.prob.variables():
+            sol_var[vol.name] = vol.varValue
+        # construct the solution dict 
+        opt_sol = {}
+        for home in self.homes:
+            for work in self.works:
+                key = 'choice'+'_'+str(home)+'_'+str(work)
+                opt_sol[(work, home)] = sol_var[key]
+                print (work, home), opt_sol[(work, home)]
+        return opt_sol
 
 def main():
     # the data set name
@@ -65,6 +79,7 @@ def main():
             [15, 10]]
     test = TransProblem(elem.home_list, elem.work_list, utils)
     test.solve()
+    # print test.utils
     
 if __name__ == '__main__':
     import sys
