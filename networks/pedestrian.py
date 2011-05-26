@@ -2,6 +2,7 @@
 import math
 from networks.basic import Vector
 from shared.universe import conf
+from utils.convert import min2slice
 
 class Sidewalk(Vector):
     """ Sidewalk is the connection between zones (residential location, economic activity area)
@@ -11,13 +12,13 @@ class Sidewalk(Vector):
         super(Sidewalk, self).__init__(name)
         self.head_node, self.tail_node = head_node, tail_node
         self.head_node.add_adjacent_vector(self)
-        self.walk_time, self.capacity = walk_time, capacity
+        self.walk_time, self.capacity = walk_time, capacity/min2slice(60.0)
 
     def calc_travel_time(self, move_flow):
         if move_flow > self.capacity * 8:
             print "%s: %s / %s" % (self, move_flow, self.capacity)
             raise PendingDeprecationWarning('Sidewalk capacity excess (8x)! ')
-        self.travel_time = self.walk_time*(1.0 + .15*math.pow(move_flow/self.capacity, 4.0))
+        self.travel_time = self.walk_time*(1.0 + .5*math.pow(move_flow/self.capacity, 4.0))
         return self.travel_time
 
     def calc_travel_cost(self, walk_time):

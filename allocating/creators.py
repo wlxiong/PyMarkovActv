@@ -19,6 +19,8 @@ def add_activity(name, U0, Um, Sigma, Lambda, Xi, \
         elem.home_pm_activity = elem.activities['home-pm']
     elif name == 'work':
         elem.work_activity = elem.activities['work']
+    if name <> 'home-am' and name <> 'home-pm':
+        elem.out_of_home_activities.append(elem.activities[name])
 
 def add_bundle(key, activity_name_list):
     bundle_name = 'PN' + str(key)

@@ -79,6 +79,7 @@ def main():
             [15, 10]]
     test = TransProblem(elem.home_list, elem.work_list, utils)
     test.solve()
+    print test.get_solution()
     # print test.utils
     
 if __name__ == '__main__':

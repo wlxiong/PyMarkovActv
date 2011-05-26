@@ -36,6 +36,7 @@ class Element(object):
         self.home_am_activity = None
         self.home_pm_activity = None
         self.work_activity = None
+        self.out_of_home_activities = []
         
         # choice alternatives
         self.work_alt = {}
@@ -43,3 +44,7 @@ class Element(object):
         self.in_home_alt = {}
         self.out_of_home_alt = {}
         self.bundle_alt = {}
+        
+        # solver 
+        self.subproblems = []
+        

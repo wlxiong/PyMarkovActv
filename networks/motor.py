@@ -18,7 +18,7 @@ class Road(Vector):
         if move_flow > self.capacity * 8:
             print "%s: %s / %s" % (self, move_flow, self.capacity)
             raise PendingDeprecationWarning('Road capacity excess (8x)! ')
-        self.travel_time = self.drive_time*(1.0 + .15*math.pow(move_flow/self.capacity, 4.0))
+        self.travel_time = self.drive_time*(1.0 + .5*math.pow(move_flow/self.capacity, 4.0))
         return self.travel_time
 
     def calc_travel_cost(self, drive_time):

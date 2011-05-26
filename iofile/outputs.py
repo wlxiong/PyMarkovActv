@@ -1,5 +1,5 @@
 # export data to file
-from shared.universe import conf, elem, util, flow
+from shared.universe import conf, elem, util, flow, logs
 from utils.convert import min2slice
 from planning.markov import Commodity, enum_commodity, enum_state
 from stats.estimator import calc_average_activity_duration, calc_aggregate_flows
@@ -45,12 +45,12 @@ def export_state_flows(export):
         for timeslice in xrange(min2slice(conf.DAY)+1):
             print>>export, " [%03d]\t" % timeslice, 
             zone_population = {}
-            for each_actv in comm.bundle.activity_set:
+            for each_actv in elem.activities.values():
                 zone_population[each_actv] = 0.0
             for state in enum_state(comm, timeslice):
                 zone_population[state.activity] += flow.state_flows[comm][timeslice][state]
 ##                print>>export, flow.transition_flows[comm][timeslice][state].values(),
-            for each_actv in sorted(comm.bundle.activity_set):
+            for each_actv in sorted(elem.activities.values()):
                 print>>export, "%8.2f\t" % (zone_population[each_actv]),
             print>>export
         print>>export
@@ -84,17 +84,21 @@ def export_optimal_util(export):
         for timeslice in xrange(min2slice(conf.DAY)):
             print>>export, " [%3d] " % timeslice, 
             for state in enum_state(comm, timeslice):
-                print>>export, ("\t %s: %4.2f" % (state, util.state_optimal_util[comm][timeslice][state])), 
+                if util.state_optimal_util[comm][timeslice][state] == None:
+                    print>>export, ("\t %s: None" % (state)), 
+                else:
+                    print>>export, ("\t %s: %4.2f" % (state, util.state_optimal_util[comm][timeslice][state])), 
             print>>export
         print>>export
 
 def export_movement_flows(export):
     print>>export, '\n------movement flows------\n'
-    sorted_moves = sorted(flow.movement_flows.keys(), key = repr)
     max_bus_flow, max_sub_flow,max_hwy_flow, max_ped_flow = \
         float('-inf'), float('-inf'), float('-inf'), float('-inf')
-    for each_move in sorted_moves:
-        # print>>export, " %s\t%6.1f" % (each_move, flow.movement_flows[each_move])
+    for each_move in sorted(flow.movement_flows.keys(), key = repr):
+        move_flow = flow.movement_flows[each_move]
+        print>>export, " %s\t%6.1f\t%6.1f" % (each_move, flow.movement_flows[each_move], 
+                                              each_move.related_edge.related_vector.calc_travel_time(move_flow))
         if each_move.related_edge.related_vector.capacity == conf.CAPACITY_bus:
             if max_bus_flow < flow.movement_flows[each_move]:
                 max_bus_flow = flow.movement_flows[each_move]
@@ -114,7 +118,7 @@ def export_movement_flows(export):
 
 
 def export_choice_volume(export):
-    print>>export, '\n ------- bundle choice -------\n'
+    print>>export, '\n ------- location choice -------\n'
     for work in elem.work_list: 
         print>>export, "(Work %s, Jobs %6.1f)\n" % (work, work.jobs)
         for home in elem.home_list: 
@@ -122,9 +126,6 @@ def export_choice_volume(export):
             # print>>export, "[In-home]\t %6.1f" % (flow.in_home_flows[(work, home)])
             # print>>export, "[Out-of-home]\t %6.1f" % (flow.out_of_home_flows[(work, home)])
             print>>export, "[Daily Activity Utility]\t %6.1f" % (util.housing_util[(work, home)])
-            for bundle in elem.bundles.values():
-                comm = Commodity(work, home, bundle)
-                print>>export, "%s\t %6.1f" % (bundle, flow.commodity_flows[comm])
             print>>export
 
 def export_activity_duration(export):
@@ -183,6 +184,7 @@ def export_data(case_name):
     # export_optimal_util(fout)
     export_movement_flows(fout)
     export_total_emission(fout)
+    export_optimal_util(logs.file)
     # export_travel_times(fout)
     fout.close()
 
@@ -192,3 +194,55 @@ def export_data(case_name):
 ##     export_optimal_util(export_file)
 ##     export_path_set(export_file)
 ##     export_link_flow(export_file)
+
+def export_location_choice_tab(export):
+    # print table head
+    print>>export, '[location_choice_tab]'
+    first_subprob = elem.subproblems[0]
+    for home in sorted(first_subprob.housing_supply):
+        print>>export, "%16s" % home, 
+    for pair in sorted(first_subprob.housing_flows):
+        print>>export, "%16s" % str(pair),
+    print>>export 
+    # print rows
+    for each_prob in elem.subproblems:
+        for home in sorted(each_prob.housing_supply):
+            print>>export, "%16.1f" % each_prob.housing_supply[home], 
+        for pair in sorted(each_prob.housing_flows):
+            print>>export, "%16.1f" % each_prob.housing_flows[pair],
+        print>>export 
+    print>>export 
+    
+def export_social_welfare_tab(export):
+    # print table head
+    print>>export, '[social_welfare_tab]'
+    first_subprob = elem.subproblems[0]
+    for home in sorted(first_subprob.housing_supply):
+        print>>export, "%16s" % home, 
+    for pair in sorted(first_subprob.housing_util):
+        print>>export, "%16s" % str(pair), 
+    print>>export, "%16s" % 'Social welfare'
+    # print rows
+    for each_prob in elem.subproblems:
+        for home in sorted(each_prob.housing_supply):
+            print>>export, "%16.1f" % each_prob.housing_supply[home], 
+        for pair in sorted(each_prob.housing_util):
+            print>>export, "%16.1f" % each_prob.housing_util[pair], 
+        print>>export, "%16.1f" % each_prob.social_welfare
+    print>>export 
+    
+def export_vehicle_emission_tab(export):
+    # print table head
+    print>>export, '[vehicle_emission_tab]'
+    first_subprob = elem.subproblems[0]
+    for home in sorted(first_subprob.housing_supply):
+        print>>export, "%16s" % home, 
+    print>>export, "%16s" % 'Vehicle emissions'
+    # print rows
+    for each_prob in elem.subproblems:
+        # print each_prob.housing_supply
+        for home in sorted(each_prob.housing_supply):
+            print>>export, "%16.1f" % each_prob.housing_supply[home], 
+        print>>export, "%16.1f" % each_prob.total_emission
+    print>>export 
+    

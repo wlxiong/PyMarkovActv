@@ -55,6 +55,7 @@ class FlowVar(object):
         # 3-dimension nested dict
         # i.e. state_flows[commodity][timeslice][state]
         self.state_flows = {}
+        self.state_steps = {}
         # 1-dimension dict, i.e. commodity_flows[commodity]
         self.commodity_flows = {}
         self.commodity_steps = {}
@@ -79,5 +80,3 @@ class FlowVar(object):
         ## mat_pattern_flow = [None] * num_sample
         ## mat_zone_passenger = [None] * num_sample
         ## mat_aggrg_trip = [None] * num_sample
-
-

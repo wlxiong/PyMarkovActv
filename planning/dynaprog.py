@@ -14,12 +14,11 @@ def calc_state_optimal_util():
         for timeslice in xrange(min2slice(conf.DAY)-1,-1,-1):
             for state in enum_state(comm, timeslice):
                 these_util = {}
-                for transition, starting_time, travel_cost, schedule_delay in \
-                    enum_transition(comm, timeslice, state):
+                for transition, starting_time, travel_cost, schedule_delay in enum_transition(comm, timeslice, state):
                     these_util[transition] = conf.THETA_tour * ( conf.discount * \
-                        util.state_optimal_util[comm][starting_time][transition.state] + \
-                        util.activity_util[timeslice][state.activity] - \
-                        travel_cost - schedule_delay)
+                                             util.state_optimal_util[comm][starting_time][transition.state] + \
+                                             util.activity_util[timeslice][state.activity] - \
+                                             travel_cost - schedule_delay)
                 # if these_util == [], the decision space is empty and then continue to next 
                 if these_util == {}:
                     continue

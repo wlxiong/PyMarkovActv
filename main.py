@@ -1,34 +1,16 @@
 # Markov decision process
-from itertools import product
-from shared.universe import elem
+import traceback
+from shared.universe import logs
+from debug.traceback import print_exc_plus
 from iofile.inputs import load_network, load_activity
-from iofile.outputs import export_data
-from loading.assign import find_fixed_point
-from viewer.plot import draw_zone_population
+from iofile.outputs import export_vehicle_emission_tab, export_social_welfare_tab, export_location_choice_tab
 from allocating.generators import gen_activity_util, gen_path_set
+from bilevel.bruteforce import enum_housing_supply
 from stats.timer import print_current_time
 
-def run_multi_scenarios(case_name, total_population, max_capacity):
-    step = max_capacity/10
-    for capacity_list in product(range(step,max_capacity,step), repeat=len(elem.home_list)):
-        if sum(capacity_list) <> total_population:
-            continue
-        for home, houses in zip(elem.home_list, capacity_list):
-            home.houses = houses
-        print '\n  *** Housing Supply ***'
-        print ' %s \n' % zip(elem.home_list, capacity_list)
-
-        # run the iterative procedure 
-        find_fixed_point(4)
-
-        # output the raw results
-        export_data(case_name+'_'+str(capacity_list))
-        print " export_data(%s_%s)" % (case_name, str(capacity_list))
-        print_current_time()
-        # generate visual results
-        # draw_zone_population(4)
-
 def main():
+    # open log file
+    logs.open_debug_log()
     # initialize the timer
     print_current_time()
     # the data set name
@@ -42,10 +24,23 @@ def main():
     print '\n LOAD DATA'
     print_current_time()
     
-    # run multiple scenarios
-    run_multi_scenarios(case_name, 30000, 30000)
+    # bruce force: run multiple scenarios
+    enum_housing_supply(case_name, 10000, 10000, 20, 16)
+    
+    # export the iterations 
+    ftab = open('tables.log', 'w')
+    export_location_choice_tab(ftab)
+    export_social_welfare_tab(ftab)
+    export_vehicle_emission_tab(ftab)
+    
+    # open log file
+    logs.close_debug_log()
     
 if __name__ == '__main__':
-    import sys
+    # import sys
     # sys.path.append('/Users/xiongyiliang/Workspace/Research/PyMarkovActv/src/')
-    main()
+    try:
+        main()
+    except:
+        traceback.print_exc()
+        print_exc_plus()

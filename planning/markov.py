@@ -16,12 +16,12 @@ class Commodity(object):
         defined as a commodity. The activity bundles are enumerated implicitly here. 
     """
     def __init__(self, work, home):
-        self.work, self.home, self.bundle = work, home
+        self.work, self.home = work, home
         self.init_state = State(elem.home_am_activity, self.home)
         self.term_state = State(elem.home_pm_activity, self.home)
         
     def __repr__(self):
-        return "(%s-%s).%s" % (self.work, self.home)
+        return "(%s-%s)" % (self.work, self.home)
         
     def __hash__(self):
         return int(hashlib.md5(repr(self)).hexdigest(), 16)
@@ -39,7 +39,7 @@ class State(object):
         self.zone, self.activity = zone, activity
         
     def __repr__(self):
-        return "%s-%s(%s)" % (self.zone, self.activity)
+        return "%s-%s" % (self.zone, self.activity)
         
     def __hash__(self):
         return int(hashlib.md5(repr(self)).hexdigest(), 16)
@@ -67,19 +67,27 @@ class Transition(object):
 
 
 def enum_commodity():
-    # for different work-home location and activity bundles
+    # for different work-home pairs
     for work in elem.work_list:
         for home in elem.home_list:
                 yield Commodity(work, home)
 
 def enum_state(commodity, timeslice):
     # enumerate all the activities
-    for each_actv in elem.activities:
+    for each_actv in elem.activities.values():
         if each_actv.time_win[0] > timeslice or \
            timeslice > each_actv.time_win[1]:
             continue
+        if each_actv == elem.home_am_activity or each_actv == elem.home_pm_activity:
+            location_set = [commodity.home]
+        elif each_actv == elem.work_activity:
+            location_set = [commodity.work]
+        else: 
+            location_set = each_actv.locations
         # choose one location for the activity
-        for each_dest in each_actv.locations:
+        for each_dest in location_set:
+            # if each_actv == elem.home_am_activity:
+            #     print each_actv, each_dest
             yield State(each_actv, each_dest)
 
 def enum_path(timeslice, this_zone, next_zone):
@@ -95,8 +103,10 @@ def enum_path(timeslice, this_zone, next_zone):
 def enum_transition(commodity, timeslice, state):
     if state.activity == elem.home_pm_activity:
         todo_list = [elem.home_pm_activity]
+    elif state.activity == elem.home_am_activity:
+        todo_list = elem.out_of_home_activities + [elem.home_am_activity]
     else:
-        todo_list = elem.activities
+        todo_list = elem.out_of_home_activities + [elem.home_pm_activity]
     for next_actv in todo_list:
         if next_actv == elem.home_am_activity or next_actv == elem.home_pm_activity:
             location_set = [commodity.home]
@@ -104,17 +114,20 @@ def enum_transition(commodity, timeslice, state):
             location_set = [commodity.work]
         else: 
             location_set = next_actv.locations
-    for next_zone in location_set:
-        # calculate the new state variable
-        next_state = State(next_actv, next_zone)
-        for each_path, starting_time, travel_cost in \
-            enum_path(timeslice, state.zone, next_zone):
-            if util.state_optimal_util[commodity][starting_time][next_state] == float('-inf'):
-                continue
-            # calculate of schedule delay
-            schedule_delay = 0.0
-            if state.activity <> next_actv:
-                schedule_delay = next_actv.calc_schedule_delay(starting_time)
-            yield (Transition(next_state, each_path), 
-                   starting_time, travel_cost, schedule_delay)
-
+        # if state.activity == elem.home_am_activity:
+        #     print todo_list, location_set
+        for next_zone in location_set:
+            # calculate the new state variable
+            next_state = State(next_actv, next_zone)
+            for each_path, starting_time, travel_cost in \
+                enum_path(timeslice, state.zone, next_zone):
+                if util.state_optimal_util[commodity][starting_time][next_state] == None:
+                    continue
+                # calculate of schedule delay
+                schedule_delay = 0.0
+                if state.activity <> next_actv:
+                    schedule_delay = next_actv.calc_schedule_delay(starting_time)
+                # if state.activity == elem.home_am_activity:
+                #     print state, next_state, each_path, travel_cost
+                yield (Transition(next_state, each_path), 
+                       starting_time, travel_cost, schedule_delay)

@@ -14,6 +14,18 @@ def init_state_optimal_util(init_value):
         # initialize the value of terminal state
         util.state_optimal_util[comm][min2slice(conf.DAY)][comm.term_state] = 0.0
 
+def init_state_steps(init_value):
+    flow.state_steps = {}
+    for comm in enum_commodity():
+        flow.state_steps[comm] = {}
+        for timeslice in xrange(min2slice(conf.DAY)+1):
+            flow.state_steps[comm][timeslice] = {}
+            for state in enum_state(comm, timeslice):
+                flow.state_steps[comm][timeslice][state] = init_value
+    # initialize the population at timeslice 0 for each zone
+    for comm in enum_commodity():
+        flow.state_steps[comm][0][comm.init_state] = flow.commodity_steps[comm]
+
 def init_state_flows(init_value):
     flow.state_flows = {}
     for comm in enum_commodity():
@@ -22,9 +34,6 @@ def init_state_flows(init_value):
             flow.state_flows[comm][timeslice] = {}
             for state in enum_state(comm, timeslice):
                 flow.state_flows[comm][timeslice][state] = init_value
-    # initialize the population at timeslice 0 for each zone
-    for comm in enum_commodity():
-        flow.state_flows[comm][0][comm.init_state] = flow.commodity_steps[comm]
 
 def init_transition_flows(init_value):
     flow.transition_flows = {}
@@ -74,23 +83,22 @@ def init_actv_population(init_value):
             flow.actv_population[timeslice][each_actv] = init_value
 
 def init_step_variables():
+    flow.movement_steps = {}
+    flow.commodity_steps = {}
+    flow.housing_steps = {}
     # clear movements in each path
     for origin in elem.zone_list:
         for dest in elem.zone_list:
             for path in elem.paths[origin][dest]:
                 path.init_movements()
-    flow.movement_steps = {}
-    flow.commodity_steps = {}
-    flow.housing_steps = {}
 
 def init_flow_variables():
     flow.movement_flows = {}
-    
     flow.commodity_flows = {}
-    for comm in enum_commodity():
-        flow.commodity_flows[comm] = 0.0
-        
     flow.housing_flows = {}
-    for home in elem.home_list:
-        for work in elem.work_list:
-            flow.housing_flows[(work, home)] = work.jobs * float(len(elem.home_list))
+    init_state_flows(0.0)
+    for comm in enum_commodity():
+        flow.commodity_flows[comm] = comm.work.jobs / float(len(elem.home_list))
+        flow.commodity_steps[comm] = flow.commodity_flows[comm]
+        flow.housing_flows[(comm.work, comm.home)] = flow.commodity_flows[comm]
+        flow.housing_steps[(comm.work, comm.home)] = flow.commodity_flows[comm]

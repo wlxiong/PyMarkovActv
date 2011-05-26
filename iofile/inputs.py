@@ -18,15 +18,7 @@ def creat_activity_6node():
 
 def creat_activity_bundle_6node():
 #   add_bundle(key, activity_name_list)
-    add_bundle(0, ['home-am', 'home-pm'])
-    add_bundle(1, ['home-am', 'home-pm', 'work'])
-
-    add_bundle(2, ['home-am', 'home-pm', 'work', 'shopping'])
-    add_bundle(3, ['home-am', 'home-pm', 'work', 'school'])
-
-    add_bundle(4, ['home-am', 'home-pm', 'work', 'shopping', 'school'])
-
-    elem.in_home_bundle = elem.bundles[0]
+    pass
 
 def creat_line_6node():
     pass
@@ -66,10 +58,10 @@ def creat_sidewalks_6node():
 
 def creat_traffic_zone_6node():
 #   add_zone(key, activity_list)
-    add_work(10,   12000, 12.0)
-    add_work(20,   18000, 10.0)
-    add_home(30,   10000, 0.0)
-    add_home(40,   20000, 0.0)
+    add_work(30,   3000, 0.0)
+    add_work(40,   7000, 0.0)
+    add_home(10,   3000, 0.0)
+    add_home(20,   7000, 0.0)
     add_zone(50,   ['school'])
     add_zone(60,   ['shopping'])
     elem.zone_list.sort()

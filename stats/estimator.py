@@ -1,18 +1,19 @@
 # some statistics for the simulation
-from shared.universe import conf, flow
+from shared.universe import conf, flow, elem
 from planning.markov import enum_commodity, enum_state, enum_transition
 from utils.convert import min2slice
 
 def calc_average_activity_duration(commodity):
     sum_duration = {}
     average_duration = {}
-    for activity in commodity.bundle.activity_set:
+    # print flow.commodity_flows
+    for activity in elem.activities.values():
         sum_duration[activity] = 0.0
         average_duration[activity] = 0.0
     for timeslice in xrange(min2slice(conf.DAY)):
         for state in enum_state(commodity, timeslice):
             sum_duration[state.activity] += flow.state_flows[commodity][timeslice][state]
-    for activity in commodity.bundle.activity_set:
+    for activity in elem.activities.values():
         sum_duration[activity] = sum_duration[activity] * conf.TICK
         average_duration[activity] = sum_duration[activity] / flow.commodity_flows[commodity]
     nontravel_duration = sum(average_duration.values())
