@@ -9,10 +9,10 @@ from networks.pedestrian import Sidewalk
 
 def add_activity(name, U0, Um, Sigma, Lambda, Xi, \
                  time_win, min_duration, \
-                 is_madatory, pref_timing):
+                 is_joint, is_madatory, pref_timing):
     elem.activities[name] = Activity(name, U0, Um, Sigma, Lambda, Xi, \
                                      time_win, min_duration, \
-                                     is_madatory, pref_timing)
+                                     is_joint, is_madatory, pref_timing)
     if name == 'home-am':
         elem.home_am_activity = elem.activities['home-am']
     elif name == 'home-pm':

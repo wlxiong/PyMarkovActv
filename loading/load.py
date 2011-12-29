@@ -27,7 +27,7 @@ def build_choice_model():
                 else:
                     # level 3: choice of activity bundle
                     elem.bundle_alt[comm] = Alternative(str(comm), None, util.commodity_optimal_util[comm], 
-                                                        elem.out_of_home_alt[(work, home)])
+                                                                 elem.out_of_home_alt[(work, home)])
 
 def calc_location_flows():
     # calculate inclusive value
@@ -86,9 +86,7 @@ def calc_state_flows():
         # from the beginning to the ending
         for timeslice in xrange(min2slice(conf.DAY)):
             for state in enum_state(comm, timeslice):
-                for transition_info in enum_transition(comm, timeslice, state):
-                    transition = transition_info[0]
-                    starting_time = transition_info[1]
+                for transition, starting_time, cost, delay in enum_transition(comm, timeslice, state):
                     # calculate transition flows
                     flow.transition_flows[comm][timeslice][state][transition] = \
                         flow.state_flows[comm][timeslice][state] * \

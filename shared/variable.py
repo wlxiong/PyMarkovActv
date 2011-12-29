@@ -55,6 +55,9 @@ class FlowVar(object):
         # 3-dimension nested dict
         # i.e. state_flows[commodity][timeslice][state]
         self.state_flows = {}
+        # 2-dimension neested dict 
+        # i.e. temporal_flows[commodity_flows][timeslice]
+        self.temporal_flows = {}
         # 1-dimension dict, i.e. commodity_flows[commodity]
         self.commodity_flows = {}
         self.commodity_steps = {}

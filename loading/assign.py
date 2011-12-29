@@ -81,5 +81,6 @@ def find_fixed_point(N):
         print_current_time()
         update_housing_flows(iter_num)
         print "  update_housing_flows(%d)" % iter_num
+         
         print_current_time()
 
