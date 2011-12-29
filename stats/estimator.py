@@ -12,13 +12,13 @@ def calc_average_activity_duration(commodity):
     for activity in commodity.bundle.activity_set:
         sum_duration[activity] = 0.0
     # total duration
-    for timeslice in xrange(min2slice(conf.DAY)):
+    for timeslice in xrange(min2slice(conf.DAY)+1):
         for state in enum_state(commodity, timeslice):
             sum_duration[state.activity] += conf.TICK * \
                                             flow.state_flows[commodity][timeslice][state]
     # average duration
     for activity in commodity.bundle.activity_set:
-        average_duration[activity] = sum_duration[activity] / flow.commodity_flows[commodity]
+        average_duration[activity] = sum_duration[activity] / flow.commodity_steps[commodity]
     # average travel time
     average_travel_time = 1440 - sum(average_duration.values())
     # subtotal for joint and independent activities
@@ -36,18 +36,18 @@ def calc_average_temporal_util(commodity):
     average_utility = {}
     average_travel_disutil = {}
     # total utility 
-    for timeslice in xrange(min2slice(conf.DAY)):
+    for timeslice in xrange(min2slice(conf.DAY)+1):
         sum_utility[timeslice] = 0.0
         for state in enum_state(commodity, timeslice):
             sum_utility[timeslice] += util.activity_util[timeslice][state.activity] * \
                                       flow.state_flows[commodity][timeslice][state]
     # average utility
-    for timeslice in xrange(min2slice(conf.DAY)):
-        average_utility[timeslice] = sum_utility[timeslice] / flow.commodity_flows[commodity]
-    for timeslice in xrange(min2slice(conf.DAY)):
-        average_travel_disutil[timeslice] = (flow.commodity_flows[commodity] - \
+    for timeslice in xrange(min2slice(conf.DAY)+1):
+        average_utility[timeslice] = sum_utility[timeslice] / flow.commodity_steps[commodity]
+    for timeslice in xrange(min2slice(conf.DAY)+1):
+        average_travel_disutil[timeslice] = (flow.commodity_steps[commodity] - \
                                              flow.temporal_flows[commodity][timeslice]) * \
-                                             conf.ALPHA_car / flow.commodity_flows[commodity]
+                                             conf.ALPHA_car / flow.commodity_steps[commodity]
     return average_utility, average_travel_disutil
 
 def calc_aggregate_flows():
@@ -66,7 +66,7 @@ def calc_aggregate_flows():
     for comm in enum_commodity():
         flow.temporal_flows[comm] = {}
         # from the beginning to the ending
-        for timeslice in xrange(min2slice(conf.DAY)):
+        for timeslice in xrange(min2slice(conf.DAY)+1):
             flow.temporal_flows[comm][timeslice] = 0.0
             for state in enum_state(comm, timeslice):
                 # calculate temporal flows
@@ -78,7 +78,6 @@ def calc_aggregate_flows():
                 # calculate activity population
                 flow.actv_population[timeslice][state.activity] =+ \
                     flow.state_flows[comm][timeslice][state]
-                    
     print '  calc_aggregate_flows()'
     print_current_time()
 
