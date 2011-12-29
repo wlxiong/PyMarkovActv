@@ -73,10 +73,10 @@ def calc_aggregate_flows():
                 flow.temporal_flows[comm][timeslice] += \
                     flow.state_flows[comm][timeslice][state]
                 # calculate zone population
-                flow.zone_population[timeslice][state.zone] =+ \
+                flow.zone_population[timeslice][state.zone] += \
                     flow.state_flows[comm][timeslice][state]
                 # calculate activity population
-                flow.actv_population[timeslice][state.activity] =+ \
+                flow.actv_population[timeslice][state.activity] += \
                     flow.state_flows[comm][timeslice][state]
     print '  calc_aggregate_flows()'
     print_current_time()
