@@ -42,7 +42,7 @@ class State(object):
         self.zone, self.activity, self.todo = zone, activity, todo 
         
     def __repr__(self):
-        return "%s-%s(%s)" % (self.zone, self.activity, sorted(self.todo))
+        return "%s-%s-%s" % (self.zone, self.activity, sorted(self.todo))
         
     def __hash__(self):
         return int(hashlib.md5(repr(self)).hexdigest(), 16)
@@ -103,7 +103,7 @@ def enum_path(timeslice, this_zone, next_zone):
         # for travel_time, prob in each_path.travel_time_distribution:
         travel_timeslice, travel_cost = each_path.calc_travel_impedences(timeslice)
         arrival_timeslice = timeslice + travel_timeslice
-        starting_time = arrival_timeslice+1
+        starting_time = arrival_timeslice + 1
         if starting_time > min2slice(conf.DAY):
             continue
         yield each_path, starting_time, travel_cost
@@ -117,7 +117,9 @@ def enum_transition(commodity, timeslice, state):
                 location_set = [commodity.home]
             elif next_actv == elem.work_activity:
                 location_set = [commodity.work]
-            else: 
+            elif next_actv == state.activity:
+                location_set = [state.zone]
+            else:
                 location_set = next_actv.locations
         if next_actv <> state.activity:
             next_todo = state.todo.difference([state.activity])
