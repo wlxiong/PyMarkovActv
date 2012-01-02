@@ -1,6 +1,6 @@
 # import data
 from shared.universe import conf, elem
-from allocating.creators import add_activity, add_bundle
+from allocating.creators import add_activity, add_bundle, add_demand
 from allocating.creators import add_line, add_road, add_zone, add_home, add_work, add_sidewalk
 
 
@@ -81,10 +81,18 @@ def creat_traffic_zone_6node():
     # add_work(20,   18000, 10.0)
     add_home(30,   20000, 0.0)
     # add_home(40,   20000, 0.0)
+    
+    # (home, work): demand
+    # enumerate all possible home-work pairs, assigning zeros for dummy pairs
+    demand_table = {
+    (10, 30): 20000 }
+    add_demand(demand_table)
+
     add_zone(20,   ['restaurent', 'joint-restaurent'])
     add_zone(40,   ['restaurent', 'joint-restaurent'])
     add_zone(50,   ['shopping', 'joint-shopping'])
     add_zone(60,   ['shopping', 'joint-shopping'])
+
     elem.zone_list.sort()
 
 

@@ -65,9 +65,6 @@ class FlowVar(object):
         self.in_home_flows = {}
         # 1-dimension dict, i.e. out_of_home_flows[(work, home)]
         self.out_of_home_flows = {}
-        # 1-dimension dict, i.e. housing_flows[(work, home)]
-        self.housing_flows = {}
-        self.housing_steps = {}
         # 3-dimension nested dict
         # i.e. OD_trips[timeslice][origin][destination]
         self.OD_trips = {}

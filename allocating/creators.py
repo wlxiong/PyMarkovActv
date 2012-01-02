@@ -54,6 +54,11 @@ def add_home(key, houses, rent):
     elem.home_list.append(elem.nodes[key])
     elem.zone_list.append(elem.nodes[key])
 
+def add_demand(demand_table):
+    for pair, demand in demand_table.items():
+        home, work = pair
+        elem.housing_flows[elem.nodes[home], elem.nodes[work]] = demand
+    
 def add_work(key, jobs, salary):
     work_name = 'WW' + str(key)
     elem.nodes[key] = Work(work_name, [elem.work_activity], jobs, salary)

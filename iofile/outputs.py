@@ -137,9 +137,9 @@ def export_choice_volume(export):
     for work in elem.work_list: 
         print>>export, "(Work %s, Jobs %6.1f)\n" % (work, work.jobs)
         for home in elem.home_list: 
-            print>>export, "[Home %s, Population %6.1f]" % (home, flow.housing_flows[(work, home)])
-            # print>>export, "[In-home]\t %6.1f" % (flow.in_home_flows[(work, home)])
-            # print>>export, "[Out-of-home]\t %6.1f" % (flow.out_of_home_flows[(work, home)])
+            print>>export, "[Home %s, Population %6.1f]" % (home, elem.housing_flows[(work, home)])
+            print>>export, "[In-home]\t %6.1f" % (flow.in_home_flows[(work, home)])
+            print>>export, "[Out-of-home]\t %6.1f" % (flow.out_of_home_flows[(work, home)])
             print>>export, "[Daily Activity Utility]\t %6.1f" % (util.housing_util[(work, home)])
             for bundle in elem.bundles.values():
                 comm = Commodity(work, home, bundle)

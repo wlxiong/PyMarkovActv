@@ -43,3 +43,8 @@ class Element(object):
         self.in_home_alt = {}
         self.out_of_home_alt = {}
         self.bundle_alt = {}
+
+        # travel demand
+        # 1-dimension dict, i.e. housing_flows[(work, home)]
+        self.housing_flows = {}
+        

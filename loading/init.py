@@ -89,8 +89,3 @@ def init_flow_variables():
     flow.commodity_flows = {}
     for comm in enum_commodity():
         flow.commodity_flows[comm] = 0.0
-        
-    flow.housing_flows = {}
-    for home in elem.home_list:
-        for work in elem.work_list:
-            flow.housing_flows[(work, home)] = work.jobs * float(len(elem.home_list))

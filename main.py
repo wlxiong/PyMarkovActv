@@ -2,7 +2,7 @@
 from shared.universe import elem
 from iofile.inputs import load_network, load_activity
 from iofile.outputs import export_data
-from loading.assign import find_fixed_point, load_flows
+from loading.assign import find_fixed_point, load_all_flows
 from viewer.plot import draw_zone_population
 from allocating.generators import gen_activity_util, gen_path_set
 from stats.estimator import calc_aggregate_flows

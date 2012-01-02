@@ -4,7 +4,7 @@ from utils.convert import min2slice
 from shared.universe import conf, util, prob
 from planning.markov import enum_commodity, enum_state, enum_transition
 
-def calc_state_optimal_util():
+def calc_state_util():
     math.exp = math.exp
     math.log = math.log
     # find the optimal uitility
