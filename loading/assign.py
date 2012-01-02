@@ -2,7 +2,7 @@
 from shared.universe import flow
 from utils.get import get_move_flow
 from planning.dynaprog import calc_state_optimal_util
-from loading.load import build_choice_model, calc_location_flows, calc_commodity_flows, calc_state_flows
+from loading.load import build_choice_model, calc_location_flows, calc_commodity_steps, calc_state_flows
 from loading.init import init_flow_variables, init_step_variables
 from loading.init import init_state_optimal_util, init_transition_choice_prob
 from loading.init import init_state_flows, init_transition_flows
@@ -27,6 +27,43 @@ def update_housing_flows(iter_num):
     for each_comm in flow.housing_steps:
         flow.housing_flows[each_comm] += (flow.housing_steps[each_comm] / (iter_num + 1.0))
 
+def load_flows():
+    print '\n [dynamic programming]'
+    init_step_variables()
+    print '  init_step_variables()'
+    print_current_time()
+    init_state_optimal_util(float('-inf'))
+    print "  init_state_optimal_util(float('-inf'))"
+    print_current_time()
+    init_transition_choice_prob(0.0)
+    print '  init_transition_choice_prob(0.0)'
+    print_current_time()
+    
+    print '\n [combined choice]'
+    calc_state_optimal_util()
+    print '  calc_state_optimal_util()'
+    print_current_time()
+    build_choice_model()
+    print '  build_choice_model()'
+    print_current_time()
+    calc_location_flows()
+    print '  calc_location_flows()'
+    print_current_time()
+    calc_commodity_steps()
+    print '  calc_commodity_steps()'
+    print_current_time()
+    
+    print '\n [traffic loading]'
+    init_state_flows(0.0)
+    print '  init_state_flows(0.0)'
+    print_current_time()
+    init_transition_flows(0.0)
+    print '  init_transition_flows(0.0)'
+    print_current_time()
+    calc_state_flows()
+    print '  calc_state_flows()'
+    print_current_time()
+
 def find_fixed_point(N):
     " Find the equilibrium flows using method of successive average (MSA). "
     # iterate demand and supply sides
@@ -35,42 +72,7 @@ def find_fixed_point(N):
     for iter_num in xrange(N): 
         
         print "\n  ### interation %d ###" % iter_num
-
-        print '\n [dynamic programming]'
-        init_step_variables()
-        print '  init_step_variables()'
-        print_current_time()
-        init_state_optimal_util(float('-inf'))
-        print "  init_state_optimal_util(float('-inf'))"
-        print_current_time()
-        init_transition_choice_prob(0.0)
-        print '  init_transition_choice_prob(0.0)'
-        print_current_time()
-        
-        print '\n [combined choice]'
-        calc_state_optimal_util()
-        print '  calc_state_optimal_util()'
-        print_current_time()
-        build_choice_model()
-        print '  build_choice_model()'
-        print_current_time()
-        calc_location_flows()
-        print '  calc_location_flows()'
-        print_current_time()
-        calc_commodity_flows()
-        print '  calc_commodity_flows()'
-        print_current_time()
-        
-        print '\n [traffic loading]'
-        init_state_flows(0.0)
-        print '  init_state_flows(0.0)'
-        print_current_time()
-        init_transition_flows(0.0)
-        print '  init_transition_flows(0.0)'
-        print_current_time()
-        calc_state_flows()
-        print '  calc_state_flows()'
-        print_current_time()
+        load_flows()
         
         print '\n [update flows]'
         update_movement_flows(iter_num)
@@ -83,4 +85,3 @@ def find_fixed_point(N):
         print "  update_housing_flows(%d)" % iter_num
          
         print_current_time()
-

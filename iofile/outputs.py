@@ -8,11 +8,13 @@ from stats.environment import calc_total_emission
 
 def export_activity_util(export):
     print>>export, '\n---------- activity temporal utility ----------\n'
+    for actv_name in sorted(elem.activities.keys()):
+        print>>export, "%s\t" % actv_name, 
+    print>>export
     for timeslice in xrange(min2slice(conf.DAY)+1):
-        # util.activity_util.append(dict() )
-        for each_actv in elem.activities.values():
-            print>>export, util.activity_util[timeslice][each_actv],
-            print>>export, '\t', 
+        for actv_name in sorted(elem.activities.keys()):
+            each_actv = elem.activities[actv_name]
+            print>>export, "%8.2f\t" % util.activity_util[timeslice][each_actv],
         print>>export
 
 def export_OD_trips(export):
@@ -43,25 +45,18 @@ def export_state_flows(export):
         print>>export, ">>commodity %s " % comm
         for timeslice in xrange(min2slice(conf.DAY)+1):
             print>>export, " [%03d]\t" % timeslice, 
-            zone_population = {}
-            for each_actv in comm.bundle.activity_set:
-                zone_population[each_actv] = 0.0
             for state in enum_state(comm, timeslice):
-                zone_population[state.activity] += flow.state_flows[comm][timeslice][state]
-##                print>>export, flow.transition_flows[comm][timeslice][state].values(),
-            for each_actv in sorted(comm.bundle.activity_set):
-                print>>export, "%8.2f\t" % (zone_population[each_actv]),
+                print>>export, " %s: %8.2f\t" % (state, flow.state_flows[comm][timeslice][state]), 
             print>>export
-        print>>export
 
 def export_temporal_flows(export):
     print>>export, '\n-------- temporal flows ---------\n'
     for comm in enum_commodity():
         print>>export, ">>commodity %s " % comm
-        for timeslice in xrange(min2slice(conf.DAY)):
+        for timeslice in xrange(min2slice(conf.DAY)+1):
             print>>export, " [%03d]\t" % timeslice, 
             print>>export, "%8.2f\t" % flow.temporal_flows[comm][timeslice], 
-            print>>export, "%8.2f\t" % (flow.commodity_flows[comm] - flow.temporal_flows[comm][timeslice])
+            print>>export, "%8.2f\t" % (flow.commodity_steps[comm] - flow.temporal_flows[comm][timeslice])
         print>>export
     print>>export
             
@@ -70,7 +65,7 @@ def export_zone_population(export):
     for zone in sorted(elem.zone_list):
         print>>export, "\t %s" % (zone),
     print>>export
-    for timeslice in xrange(min2slice(conf.DAY)):
+    for timeslice in xrange(min2slice(conf.DAY)+1):
         print>>export, "[%3d]   " % timeslice, 
         for zone in sorted(elem.zone_list):
             print>>export, "\t %08.1f" % flow.zone_population[timeslice][zone],
@@ -81,7 +76,7 @@ def export_activity_population(export):
     for each_actv in elem.activities.values():
         print>>export, "\t %s" % (each_actv), 
     print>>export
-    for timeslice in xrange(min2slice(conf.DAY)):
+    for timeslice in xrange(min2slice(conf.DAY)+1):
         print>>export, "[%3d]   " % timeslice, 
         for each_actv in elem.activities.values():
             print>>export, "\t %08.1f" % flow.actv_population[timeslice][each_actv],
@@ -125,16 +120,17 @@ def export_movement_flows(export):
     print>>export, '\n movement flow variables (exceeding capacity) \n'
     for origin in elem.zone_list:
         for dest in elem.zone_list:
-            print>>export, [origin, dest]
+            # print>>export, [origin, dest]
             for path in elem.paths[origin][dest]:
-                print>>export, path
+                # print>>export, path
                 for timeslice in xrange(min2slice(conf.DAY)-1,-1,-1):
                     path.get_movements(timeslice)
                     for each_move in path.moves_on_path[timeslice]:
                         get_move_flow(each_move)
                         if flow.movement_flows[each_move] > each_move.related_edge.related_vector.capacity: 
-                            print>>export, each_move
-                            print>>export, flow.movement_flows[each_move]
+                            print>>export, each_move, 
+                            print>>export, ": %8.2f / %8.2f" % (flow.movement_flows[each_move],
+                                                                each_move.related_edge.related_vector.capacity)
 
 def export_choice_volume(export):
     print>>export, '\n------- bundle choice -------\n'
@@ -147,7 +143,7 @@ def export_choice_volume(export):
             print>>export, "[Daily Activity Utility]\t %6.1f" % (util.housing_util[(work, home)])
             for bundle in elem.bundles.values():
                 comm = Commodity(work, home, bundle)
-                print>>export, "%s\t %6.1f" % (bundle, flow.commodity_flows[comm])
+                print>>export, "%s\t %6.1f" % (bundle, flow.commodity_steps[comm])
             print>>export
 
 def export_activity_duration(export):
@@ -165,7 +161,7 @@ def export_average_temporal_util(export):
     for comm in enum_commodity():
         print>>export, " [%s] " % comm
         average_utility, average_travel_disutil = calc_average_temporal_util(comm)
-        for timeslice in xrange(min2slice(conf.DAY)):
+        for timeslice in xrange(min2slice(conf.DAY)+1):
             print>>export, " [%d]\t" % timeslice, 
             print>>export, "%.1f\t%.1f\t" % (average_utility[timeslice], average_travel_disutil[timeslice]),
             print>>export
@@ -183,9 +179,9 @@ def export_average_temporal_util(export):
 def export_aggregate_flows(export):
     # export_OD_trips(export)
     # export_depart_flows(export)
-    export_temporal_flows(export)
     export_zone_population(export)
     export_activity_population(export)
+    export_temporal_flows(export)
 
 def export_total_emission(export):
     print>>export, '\n------- vehicle emission -------\n'
@@ -197,10 +193,11 @@ def export_data(case_name):
     # export_configure(fout)
     export_choice_volume(fout)
     export_activity_duration(fout)
-    export_average_temporal_util(fout)
     export_activity_util(fout)
     export_aggregate_flows(fout)
+    export_average_temporal_util(fout)
     export_movement_flows(fout)
+    # export_state_flows(fout)
     # export_total_emission(fout)
     # export_state_flows(fout)
     # export_optimal_util(fout)

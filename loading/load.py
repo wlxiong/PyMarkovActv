@@ -58,7 +58,7 @@ def calc_location_flows():
         for work in elem.work_list:
             elem.housing_alt[(work, home)].volume = flow.housing_steps[(work, home)]
 
-def calc_commodity_flows():
+def calc_commodity_steps():
     # calculate choice volume 
     for work in elem.work_list:
         for home in elem.home_list:
@@ -74,6 +74,8 @@ def calc_commodity_flows():
 
 def add_movement_steps(path, timeslice, add_step):
     # load the path flow onto movements
+    # if path is None:
+    #     return
     path.get_movements(timeslice)
     for each_move in path.moves_on_path[timeslice]:
         get_move_step(each_move)

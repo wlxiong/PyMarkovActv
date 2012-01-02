@@ -13,8 +13,8 @@ def creat_activity_6node():
     add_activity('home-am',          1.0, 400, -0.008, 1.0,   720, (0, 1440), 360, 1, 0, -1)
     add_activity('home-pm',          1.0, 400, -0.008, 1.0,   720, (0, 1440), 360, 1, 0, -1)
     add_activity('work',             0.0,1000,  0.010, 1.0,   720, (0, 1440), 240, 0, 1, 540)
-    add_activity('restaurent',       0.0, 360,  0.015, 1.0,  1110, (0, 1440),  10, 0, 0, -1)
-    add_activity('joint-restaurent', 0.0, 360,  0.015, 1.0,  1110, (0, 1440),  10, 1, 0, -1)
+    add_activity('restaurent',       0.0, 360,  0.010, 1.0,  1110, (0, 1440),  10, 0, 0, -1)
+    add_activity('joint-restaurent', 0.0, 360,  0.010, 1.0,  1110, (0, 1440),  10, 1, 0, -1)
     add_activity('shopping',         0.0, 400,  0.010, 1.0,  1170, (0, 1440),  10, 0, 0, -1)
     add_activity('joint-shopping',   0.0, 400,  0.010, 1.0,  1170, (0, 1440),  10, 1, 0, -1)
     
@@ -32,7 +32,7 @@ def creat_activity_bundle_6node():
     # joint activities
     add_bundle(5, ['home-am', 'home-pm', 'work', 'joint-shopping'])
     add_bundle(6, ['home-am', 'home-pm', 'work', 'joint-restaurent'])
-
+    
     add_bundle(7, ['home-am', 'home-pm', 'work', 'joint-shopping', 'restaurent'])
     add_bundle(8, ['home-am', 'home-pm', 'work', 'shopping', 'joint-restaurent'])
     add_bundle(9, ['home-am', 'home-pm', 'work', 'joint-shopping', 'joint-restaurent'])
@@ -77,7 +77,7 @@ def creat_sidewalks_6node():
 
 def creat_traffic_zone_6node():
 #   add_zone(key, activity_list)
-    add_work(10,   20000, 12.0)
+    add_work(10,   20000, 0.0)
     # add_work(20,   18000, 10.0)
     add_home(30,   20000, 0.0)
     # add_home(40,   20000, 0.0)
