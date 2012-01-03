@@ -19,11 +19,14 @@ class Path(object):
             self.edges_on_path = edge_list
         self.moves_on_path = {}
         self.path_travel_timeslice = {}
+        self.path_travel_time = {}
         self.path_travel_cost = {}
         self.num_transfer = self.calc_tranfer()
         
     def __cmp__(self, other):
-        pass
+        self.calc_travel_impedences(0)
+        other.calc_travel_impedences(0)
+        return self.path_travel_timeslice[0] - other.path_travel_timeslice[0]
     
     def __add__(self, extpath):
         if self.nodes_on_path == []:
@@ -47,6 +50,7 @@ class Path(object):
     def init_movements(self):
         self.moves_on_path = {}
         self.path_travel_timeslice = {}
+        self.path_travel_time = {}
         self.path_travel_cost = {}
     
     def calc_tranfer(self):
@@ -71,6 +75,7 @@ class Path(object):
         total_travel_cost = self.num_transfer * conf.ALPHA_tran
         # then generate memoization for movements on path, and calculate other travel costs
         self.moves_on_path[timeslice] = []
+        self.path_travel_time[timeslice] = 0.0
         timeline = timeslice
         for each_edge in self.edges_on_path:
             if isinstance(each_edge.related_vector, TransitLine):
@@ -103,6 +108,7 @@ class Path(object):
                 travel_cost = each_vector.calc_travel_cost(travel_time)
                 timeline = timeline + min2slice(travel_time)
                 total_travel_cost = total_travel_cost + travel_cost
+                self.path_travel_time[timeslice] += travel_time
         self.path_travel_timeslice[timeslice] = timeline - timeslice
         self.path_travel_cost[timeslice] = total_travel_cost
         return self.moves_on_path[timeslice]
@@ -111,3 +117,6 @@ class Path(object):
         self.get_movements(timeslice)
         # return two travel impedences: travel time (slice) and travel cost
         return (self.path_travel_timeslice[timeslice], self.path_travel_cost[timeslice])
+    
+    def get_travel_time(self, timeslice):
+        return self.path_travel_time[timeslice]

@@ -8,6 +8,8 @@ class Element(object):
         # 1-dimension list nested in 2-dimension dict, 
         # i.e. paths[origin][destination][path_id]
         self.paths = {}
+        # 2-dimension dict, i.e. paths[origin][destination]
+        self.shortest_path = {}
         # 1-dimension dict, i.e. lines[line_id]
         self.lines = {}
         # 1-dimension dict, i.e. walks[walk_id]

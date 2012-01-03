@@ -4,7 +4,7 @@ from iofile.inputs import load_network, load_activity
 from iofile.outputs import export_data
 from loading.assign import find_fixed_point, load_all_flows
 from viewer.plot import draw_zone_population
-from allocating.generators import gen_activity_util, gen_path_set
+from allocating.generators import gen_activity_util, gen_path_set, find_shortest_path
 from stats.estimator import calc_aggregate_flows
 from stats.timer import print_current_time
 import math
@@ -25,11 +25,11 @@ def run_multi_scenarios(case_name, corr_list):
         gen_activity_util()
 
         # run the iterative procedure 
-        find_fixed_point(2)
+        find_fixed_point(8)
         
         # load the convergence flows
         # print '\n Now, let\'s get the convergence flows... \n'
-        # load_flows()
+        # load_all_flows()
         
         # calculate the statistics
         calc_aggregate_flows()
@@ -37,8 +37,8 @@ def run_multi_scenarios(case_name, corr_list):
         # output the raw results
         export_data(case_name+'_'+str(corr))
         print "\n [export data]"
-        print "     data set: %s" % case_name
-        print "  correlation: %f" % corr
+        print "       data set: %s" % case_name
+        print "    correlation: %f" % corr
         print_current_time()
         # generate visual results
         # draw_zone_population(4)
@@ -53,11 +53,12 @@ def main():
     # load network data
     load_network(case_name)
     gen_path_set()
+    find_shortest_path()
     print '\n DATA LOADED'
     print_current_time()
     
     # run multiple scenarios
-    run_multi_scenarios(case_name, [1.0, 0.0])
+    run_multi_scenarios(case_name, [1.0])
     
 if __name__ == '__main__':
     import sys

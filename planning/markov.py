@@ -99,14 +99,13 @@ def enum_state(commodity, timeslice):
     yield commodity.term_state
 
 def enum_path(timeslice, this_zone, next_zone):
-    for each_path in elem.paths[this_zone][next_zone]:
-        # for travel_time, prob in each_path.travel_time_distribution:
-        travel_timeslice, travel_cost = each_path.calc_travel_impedences(timeslice)
-        arrival_timeslice = timeslice + travel_timeslice
-        starting_time = arrival_timeslice + 1
-        if starting_time > min2slice(conf.DAY):
-            continue
-        yield each_path, starting_time, travel_cost
+    shortest_path = elem.shortest_path[this_zone][next_zone]
+    travel_timeslice, travel_cost = shortest_path.calc_travel_impedences(timeslice)
+    arrival_timeslice = timeslice + travel_timeslice
+    starting_time = arrival_timeslice + 1
+    if starting_time > min2slice(conf.DAY):
+        return
+    yield shortest_path, starting_time, travel_cost
 
 def enum_transition(commodity, timeslice, state):
     for next_actv in state.todo:

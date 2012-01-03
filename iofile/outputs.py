@@ -121,16 +121,20 @@ def export_movement_flows(export):
     for origin in elem.zone_list:
         for dest in elem.zone_list:
             # print>>export, [origin, dest]
-            for path in elem.paths[origin][dest]:
-                # print>>export, path
-                for timeslice in xrange(min2slice(conf.DAY)-1,-1,-1):
-                    path.get_movements(timeslice)
-                    for each_move in path.moves_on_path[timeslice]:
-                        get_move_flow(each_move)
-                        if flow.movement_flows[each_move] > each_move.related_edge.related_vector.capacity: 
-                            print>>export, each_move, 
-                            print>>export, ": %8.2f / %8.2f" % (flow.movement_flows[each_move],
-                                                                each_move.related_edge.related_vector.capacity)
+            path = elem.shortest_path[origin][dest]
+            print>>export, "\n%s" % path
+            for timeslice in xrange(min2slice(conf.DAY)):
+                path_travel_timeslice, path_travel_cost = path.calc_travel_impedences(timeslice)
+                print>>export, "[%3d] " % timeslice, 
+                print>>export, "%8.2f\t%8.2f\t" % (path.get_travel_time(timeslice), path_travel_cost)
+                for each_move in path.moves_on_path[timeslice]:
+                    get_move_flow(each_move)
+                    print>>export, " %s:\t" % each_move, 
+                    print>>export, "%8.2f / %8.2f" % (flow.movement_flows[each_move],
+                                                        each_move.related_edge.related_vector.capacity), 
+                    if flow.movement_flows[each_move] > each_move.related_edge.related_vector.capacity:
+                        print>>export, " !!", 
+                    print>>export
 
 def export_choice_volume(export):
     print>>export, '\n------- bundle choice -------\n'
@@ -149,11 +153,26 @@ def export_choice_volume(export):
 def export_activity_duration(export):
     print>>export, '\n------- activity duration -------\n'
     for comm in enum_commodity():
-        print>>export, " [%s] " % comm 
-        average_duration, average_travel_time = calc_average_activity_duration(comm)
-        for key, value in average_duration.items():
-            print>>export, "%s:\t%.1f\t" % (key, value),
-        print>>export, "travel:\t%.1f\t" % average_travel_time,
+        print>>export, " [%s] " % comm
+        activity_list = sorted(list(comm.bundle.activity_set))
+        average_activity_duration, average_travel_time = calc_average_activity_duration(comm)
+        # subtotal for joint and independent activities
+        joint_activity_duration = 0.0
+        indep_activity_duration = 0.0
+        for each_actv in activity_list:
+            if each_actv.is_joint:
+                joint_activity_duration += average_activity_duration[each_actv]
+            else: 
+                indep_activity_duration += average_activity_duration[each_actv]
+        print>>export, "%12s\t%12s\t%12s" % ('travel', 'joint', 'indep')
+        print>>export, "%12.1f\t%12.1f\t%12.1f" % (average_travel_time, joint_activity_duration, indep_activity_duration)
+        # print the activity names
+        for each_actv in activity_list:
+            print>>export, "%12s\t" % (each_actv.name),
+        print>>export
+        # print the average activity durations
+        for each_actv in activity_list:
+            print>>export, "%12.1f\t" % (average_activity_duration[each_actv]),
         print>>export
 
 def export_average_temporal_util(export):
@@ -163,7 +182,7 @@ def export_average_temporal_util(export):
         average_utility, average_travel_disutil = calc_average_temporal_util(comm)
         for timeslice in xrange(min2slice(conf.DAY)+1):
             print>>export, " [%d]\t" % timeslice, 
-            print>>export, "%.1f\t%.1f\t" % (average_utility[timeslice], average_travel_disutil[timeslice]),
+            print>>export, "%8.1f\t%8.1f\t" % (average_utility[timeslice], average_travel_disutil[timeslice]),
             print>>export
 
 # def export_travel_times(export):

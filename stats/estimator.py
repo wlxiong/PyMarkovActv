@@ -6,30 +6,22 @@ from utils.convert import min2slice
 from stats.timer import print_current_time
 
 def calc_average_activity_duration(commodity):
-    sum_duration = {}
-    average_duration = {}
+    sum_activity_duration = {}
+    average_activity_duration = {}
     # initialize total duration
     for activity in commodity.bundle.activity_set:
-        sum_duration[activity] = 0.0
+        sum_activity_duration[activity] = 0.0
     # total duration
     for timeslice in xrange(min2slice(conf.DAY)):
         for state in enum_state(commodity, timeslice):
-            sum_duration[state.activity] += conf.TICK * \
+            sum_activity_duration[state.activity] += conf.TICK * \
                                             flow.state_flows[commodity][timeslice][state]
     # average duration
     for activity in commodity.bundle.activity_set:
-        average_duration[activity] = sum_duration[activity] / flow.commodity_steps[commodity]
+        average_activity_duration[activity] = sum_activity_duration[activity] / flow.commodity_steps[commodity]
     # average travel time
-    average_travel_time = 1440 - sum(average_duration.values())
-    # subtotal for joint and independent activities
-    average_duration['joint-activity'] = 0.0
-    average_duration['indep-activity'] = 0.0
-    for each_actv in commodity.bundle.activity_set:
-        if each_actv.is_joint:
-            average_duration['joint-activity'] += average_duration[each_actv]
-        else: 
-            average_duration['indep-activity'] += average_duration[each_actv]
-    return average_duration, average_travel_time
+    average_travel_time = 1440 - sum(average_activity_duration.values())
+    return average_activity_duration, average_travel_time
 
 def calc_average_temporal_util(commodity):
     sum_utility = {}
