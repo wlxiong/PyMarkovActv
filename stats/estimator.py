@@ -12,7 +12,7 @@ def calc_average_activity_duration(commodity):
     for activity in commodity.bundle.activity_set:
         sum_duration[activity] = 0.0
     # total duration
-    for timeslice in xrange(min2slice(conf.DAY)+1):
+    for timeslice in xrange(min2slice(conf.DAY)):
         for state in enum_state(commodity, timeslice):
             sum_duration[state.activity] += conf.TICK * \
                                             flow.state_flows[commodity][timeslice][state]
