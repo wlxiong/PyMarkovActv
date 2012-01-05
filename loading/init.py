@@ -30,9 +30,12 @@ def init_state_util():
         for timeslice in xrange(min2slice(conf.DAY)+1):
             util.state_util[comm][timeslice] = {}
             for state in enum_state(comm, timeslice):
-                util.state_util[comm][timeslice][state] = 0.0
-        # initialize the value of terminal state
-        util.state_util[comm][min2slice(conf.DAY)][comm.term_state] = float('-inf')
+                # flag the states that has not been visited by 
+                # setting the state utilities to negative infinity
+                util.state_util[comm][timeslice][state] = float('-inf')
+        # initialize the value of terminal state to zeros
+        # and the backward recursive process starts here
+        util.state_util[comm][min2slice(conf.DAY)][comm.term_state] = 0.0
 
 def init_state_flows(init_value):
     flow.state_flows = {}
