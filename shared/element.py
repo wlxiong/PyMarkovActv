@@ -40,13 +40,16 @@ class Element(object):
         self.work_activity = None
         
         # choice alternatives
-        self.work_alt = {}
-        self.housing_alt = {}
+        self.person_alt = {}
         self.in_home_alt = {}
         self.out_of_home_alt = {}
         self.bundle_alt = {}
 
-        # travel demand
-        # 1-dimension dict, i.e. housing_flows[(work, home)]
-        self.housing_flows = {}
+        # persons in the household
+        # 1-dimension dict, i.e. persons[person_id]
+        self.persons = {}
+        # 1-dimension list
+        self.person_list = []
+        # 1-dimension dict, i.e. person_flows[person]
+        self.person_flows = {}
         

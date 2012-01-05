@@ -1,83 +1,56 @@
 # some statistics for the simulation
 from shared.universe import conf, flow, util
 from planning.markov import enum_commodity, enum_state
-from loading.init import init_OD_trips, init_zone_population, init_actv_population
+from loading.init import init_zone_population, init_activity_population, init_static_population
 from utils.convert import min2slice
-from stats.timer import print_current_time
 
 def calc_average_activity_duration(commodity):
-    sum_activity_duration = {}
     average_activity_duration = {}
-    # initialize total duration
+    # initialize average duration
     for activity in commodity.bundle.activity_set:
-        sum_activity_duration[activity] = 0.0
-    # total duration
+        average_activity_duration[activity] = 0.0
+    # average duration
     for timeslice in xrange(min2slice(conf.DAY)):
         for state in enum_state(commodity, timeslice):
-            sum_activity_duration[state.activity] += conf.TICK * \
-                                            flow.state_flows[commodity][timeslice][state]
-    # average duration
-    for activity in commodity.bundle.activity_set:
-        average_activity_duration[activity] = sum_activity_duration[activity] / flow.commodity_steps[commodity]
+            average_activity_duration[state.activity] += conf.TICK * \
+                flow.state_flows[commodity][timeslice][state] / flow.commodity_steps[commodity]
     # average travel time
     average_travel_time = 1440 - sum(average_activity_duration.values())
     return average_activity_duration, average_travel_time
 
 def calc_average_temporal_util(commodity):
-    sum_utility = {}
-    average_utility = {}
+    average_temporal_utility = {}
     average_travel_disutil = {}
-    # total utility 
     for timeslice in xrange(min2slice(conf.DAY)+1):
-        sum_utility[timeslice] = 0.0
+        # initialize temporal utility
+        average_temporal_utility[timeslice] = 0.0
         for state in enum_state(commodity, timeslice):
-            sum_utility[timeslice] += util.activity_util[timeslice][state.activity] * \
-                                      flow.state_flows[commodity][timeslice][state]
-    # average utility
-    for timeslice in xrange(min2slice(conf.DAY)+1):
-        average_utility[timeslice] = sum_utility[timeslice] / flow.commodity_steps[commodity]
+            # average temporal utility 
+            average_temporal_utility[timeslice] += (util.solo_util[timeslice][state.activity] + \
+                util.socio_util[commodity.person][timeslice][(state.activity,state.zone)])* \
+                flow.state_flows[commodity][timeslice][state] / flow.commodity_steps[commodity]
+    # travel disutility
     for timeslice in xrange(min2slice(conf.DAY)+1):
         average_travel_disutil[timeslice] = (flow.commodity_steps[commodity] - \
-                                             flow.temporal_flows[commodity][timeslice]) * \
+                                             flow.static_population[commodity][timeslice]) * \
                                              conf.ALPHA_car / flow.commodity_steps[commodity]
-    return average_utility, average_travel_disutil
+    return average_temporal_utility, average_travel_disutil
 
-def calc_aggregate_flows():
-    # initialize the aggregate flows
+def calc_population_flows():
+    # initialize the population flows
     init_zone_population(0.0)
-    print '  init_zone_population(0.0)'
-    print_current_time()
-    init_actv_population(0.0)
-    print '  init_actv_population(0.0)'
-    print_current_time()
-    init_OD_trips(0.0)
-    print '  init_OD_trips(0.0)'
-    print_current_time()
-    # calculate aggregate flow variables based on transition flows
-    flow.temporal_flows = {}
+    init_activity_population(0.0)
+    init_static_population(0.0)
+    # calculate population flow variables based on state flows
     for comm in enum_commodity():
-        flow.temporal_flows[comm] = {}
-        # from the beginning to the ending
         for timeslice in xrange(min2slice(conf.DAY)+1):
-            flow.temporal_flows[comm][timeslice] = 0.0
             for state in enum_state(comm, timeslice):
-                # calculate temporal flows
-                flow.temporal_flows[comm][timeslice] += \
+                # calculate static population
+                flow.static_population[comm][timeslice] += \
                     flow.state_flows[comm][timeslice][state]
                 # calculate zone population
                 flow.zone_population[timeslice][state.zone] += \
                     flow.state_flows[comm][timeslice][state]
                 # calculate activity population
-                flow.actv_population[timeslice][state.activity] += \
+                flow.activity_population[timeslice][state.activity] += \
                     flow.state_flows[comm][timeslice][state]
-    print '  calc_aggregate_flows()'
-    print_current_time()
-
-def calc_activity_duration_variance():
-    pass
-
-def calc_average_wait_time():
-    pass
-
-def calc_average_schedule_delay():
-    pass

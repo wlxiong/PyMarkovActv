@@ -14,23 +14,23 @@ from itertools import combinations
 
 
 class Commodity(object):
-    """ The passengers choosing each activity bundles at every residential location (home)
-        and place of work (work) is a commodity. Or the activity bundles are enumerated implicitly. 
+    """ The commodity is the cross product of the set of household members and the set of activity bundles. 
+        Or the activity bundles are enumerated implicitly. 
     """
-    def __init__(self, work, home, bundle):
-        self.work, self.home, self.bundle = work, home, bundle
+    def __init__(self, person, bundle):
+        self.person, self.bundle = person, bundle
+        self.work, self.home = person.work, person.home
         self.init_state = State(elem.home_am_activity, self.home, self.bundle.activity_set)
         self.term_state = State(elem.home_pm_activity, self.home, frozenset([elem.home_pm_activity]))
         
     def __repr__(self):
-        return "(%s-%s).%s" % (self.work, self.home, self.bundle)
+        return "%s>%s" % (self.person, self.bundle)
         
     def __hash__(self):
         return int(hashlib.md5(repr(self)).hexdigest(), 16)
         
     def __eq__(self, other):
-        return self.work == other.work and \
-               self.home == other.home and \
+        return self.person == other.person and \
                self.bundle == other.bundle
 
     
@@ -71,10 +71,9 @@ class Transition(object):
 
 def enum_commodity():
     # for different work-home location and activity bundles
-    for work in elem.work_list:
-        for home in elem.home_list:
-            for bundle in elem.bundles.values():
-                yield Commodity(work, home, bundle)
+    for person in elem.person_list:
+        for bundle in elem.bundles.values():
+            yield Commodity(person, bundle)
 
 def enum_state(commodity, timeslice):
     activity_bundle = commodity.bundle.activity_set
@@ -129,7 +128,7 @@ def enum_transition(commodity, timeslice, state):
             next_state = State(next_actv, next_zone, next_todo)
             for each_path, starting_time, travel_cost in \
                 enum_path(timeslice, state.zone, next_zone):
-                if util.state_optimal_util[commodity][starting_time][next_state] == float('-inf'):
+                if util.state_util[commodity][starting_time][next_state] == float('-inf'):
                     continue
                 # calculate of schedule delay
                 schedule_delay = 0.0

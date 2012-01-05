@@ -34,6 +34,9 @@ class Activity(object):
     def __repr__(self):
         return "%s" % (self.name)
 
+    def __cmp__(self, other):
+        return cmp(self.name, other.name)
+
     def __eq__(self, other):
         return self.name == other.name
 
@@ -84,3 +87,20 @@ class Bundle(object):
 
     def __eq__(self, other):
         return self.name == other.name
+
+class Person(object):
+    """ Each individual has his/her own work-home pair. 
+    """
+    def __init__(self, name, work, home):
+        self.name = name
+        self.work, self.home = work, home
+
+    def __repr__(self):
+        return "%s@(%s-%s)" % (self.name, self.work, self.home)
+
+    def __hash__(self):
+        return int(hashlib.md5(repr(self)).hexdigest(), 16)
+
+    def __eq__(self, other):
+        return self.work == other.work and \
+               self.home == other.home

@@ -7,52 +7,48 @@ from shared.universe import conf, elem, flow, prob, util
 from planning.markov import enum_commodity, enum_state, enum_transition
 
 def build_choice_model(): 
-    for work in elem.work_list:
-        for home in elem.home_list:
-            # root 1: residential location
-            elem.housing_alt[(work, home)] = Alternative(str(home), conf.THETA_travel, 0.0, None)
-            # level 2: choice of making trip
-            elem.out_of_home_alt[(work, home)] = Alternative('out-of-home', conf.THETA_bundle, 0.0, elem.housing_alt[(work, home)])
-            for bundle in elem.bundles.values():
-                comm = Commodity(work, home, bundle)
-                if bundle == elem.in_home_bundle:
-                    # level 2: choice of not making trip
-                    elem.in_home_alt[(work, home)] = Alternative('in-home', None, util.commodity_optimal_util[comm], 
-                                                                 elem.housing_alt[(work, home)])
-                else:
-                    # level 3: choice of activity bundle
-                    elem.bundle_alt[comm] = Alternative(str(comm), None, util.commodity_optimal_util[comm], 
-                                                                 elem.out_of_home_alt[(work, home)])
+    for person in elem.person_list:
+        # root 1: residential location
+        elem.person_alt[person] = Alternative(str(person), conf.THETA_travel, 0.0, None)
+        # level 2: choice of making trip
+        elem.out_of_home_alt[person] = Alternative('out-of-home', conf.THETA_bundle, 0.0, elem.person_alt[person])
+        for bundle in elem.bundles.values():
+            comm = Commodity(person, bundle)
+            if bundle == elem.in_home_bundle:
+                # level 2: choice of not making trip
+                elem.in_home_alt[person] = Alternative('in-home', None, util.commodity_util[comm], 
+                                                       elem.person_alt[person])
+            else:
+                # level 3: choice of activity bundle
+                elem.bundle_alt[comm]    = Alternative(str(comm), None, util.commodity_util[comm], 
+                                                    elem.out_of_home_alt[person])
 
 def calc_inclusive_values():
     # calculate inclusive value
-    for home in elem.home_list:
-        for work in elem.work_list:
-            for bundle in elem.bundles.values():
-                if bundle == elem.in_home_bundle:
-                    # calculate expected utility for in-home choice
-                    util.in_home_util[(work, home)] = elem.in_home_alt[(work, home)].calc_inclusive_value()
-            # calculate expected utility for out-of-home choice
-            util.out_of_home_util[(work, home)] = elem.out_of_home_alt[(work, home)].calc_inclusive_value()
-            # calculate expected utility for residential location 
-            util.housing_util[(work, home)]     = elem.housing_alt[(work, home)].calc_inclusive_value()
+    for person in elem.person_list:
+        for bundle in elem.bundles.values():
+            if bundle == elem.in_home_bundle:
+                # calculate expected utility for in-home choice
+                util.in_home_util[person] = elem.in_home_alt[person].calc_inclusive_value()
+        # calculate expected utility for out-of-home choice
+        util.out_of_home_util[person] = elem.out_of_home_alt[person].calc_inclusive_value()
+        # calculate expected utility for each individual
+        util.person_util[person]     = elem.person_alt[person].calc_inclusive_value()
     # add the location choice results to housing alternatives
-    for home in elem.home_list:
-        for work in elem.work_list:
-            elem.housing_alt[(work, home)].volume = elem.housing_flows[(work, home)]
+    for person in elem.person_list:
+        elem.person_alt[person].volume = elem.person_flows[person]
 
 def calc_commodity_steps():
     # calculate choice volume 
-    for work in elem.work_list:
-        for home in elem.home_list:
-            for bundle in elem.bundles.values():
-                comm = Commodity(work, home, bundle)
-                if bundle == elem.in_home_bundle:
-                    flow.commodity_steps[comm] = elem.in_home_alt[(work, home)].calc_choice_volume()
-                else:
-                    flow.commodity_steps[comm] = elem.bundle_alt[comm].calc_choice_volume()
-            flow.in_home_flows[(work, home)]     = elem.in_home_alt[(work, home)].calc_choice_volume()
-            flow.out_of_home_flows[(work, home)] = elem.out_of_home_alt[(work, home)].calc_choice_volume()
+    for person in elem.person_list:
+        for bundle in elem.bundles.values():
+            comm = Commodity(person, bundle)
+            if bundle == elem.in_home_bundle:
+                flow.commodity_steps[comm] = elem.in_home_alt[person].calc_choice_volume()
+            else:
+                flow.commodity_steps[comm] = elem.bundle_alt[comm].calc_choice_volume()
+        flow.in_home_flows[person]     = elem.in_home_alt[person].calc_choice_volume()
+        flow.out_of_home_flows[person] = elem.out_of_home_alt[person].calc_choice_volume()
 
 def add_movement_steps(path, timeslice, add_step):
     # load the path flow onto movements

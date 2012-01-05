@@ -1,6 +1,6 @@
 # create elements
-from shared.universe import elem
-from events.activity import Activity, Bundle
+from shared.universe import elem, conf
+from events.activity import Activity, Bundle, Person
 from networks.basic import Node 
 from networks.motor import Road
 from networks.location import Zone, Home, Work 
@@ -54,11 +54,21 @@ def add_home(key, houses, rent):
     elem.home_list.append(elem.nodes[key])
     elem.zone_list.append(elem.nodes[key])
 
-def add_demand(demand_table):
-    for pair, demand in demand_table.items():
-        home, work = pair
-        elem.housing_flows[elem.nodes[home], elem.nodes[work]] = demand
+def add_person(key, work_key, home_key, population):
+    person_name = 'PS' + str(key)
+    work = elem.nodes[work_key]
+    home = elem.nodes[home_key]
+    person = Person(person_name, work, home)
+    elem.persons[key] = person
+    elem.person_list.append(person)
+    elem.person_flows[person] = population
     
+def set_corr(a, b, corr):
+    pa = elem.persons[a]
+    pb = elem.persons[b]
+    conf.corr[(pa,pb)] = corr
+    conf.corr[(pb,pa)] = corr
+
 def add_work(key, jobs, salary):
     work_name = 'WW' + str(key)
     elem.nodes[key] = Work(work_name, [elem.work_activity], jobs, salary)

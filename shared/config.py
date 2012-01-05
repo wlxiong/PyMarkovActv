@@ -58,4 +58,6 @@ class Config(object):
         # self.THETA_path = 0.1
         # discount of future utility
         self.discount = 1.0
-
+        # correlation between household members
+        # 1-dimension dict, i.e. corr[(person 1,person 2)]
+        self.corr = {}
