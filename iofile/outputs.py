@@ -272,7 +272,7 @@ def export_data(case_name):
     
     export_solo_activity_util(fout)
     export_socio_activity_util(fout)
-    export_activity_choice_prob(fout)
+    # export_activity_choice_prob(fout)
     
     export_zone_population(fout)
     export_activity_population(fout)
