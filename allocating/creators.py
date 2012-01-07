@@ -49,9 +49,16 @@ def add_zone(key, activity_name_list):
     
 def add_home(key, houses, rent):
     home_name = 'HH' + str(key)
-    elem.nodes[key] = Home(home_name, [elem.home_am_activity, elem.home_pm_activity], houses, rent)
+    elem.nodes[key] = Home(home_name, [elem.home_am_activity, elem.home_pm_activity], float(houses), rent)
     # add it to the home and zone lists
     elem.home_list.append(elem.nodes[key])
+    elem.zone_list.append(elem.nodes[key])
+
+def add_work(key, jobs, salary):
+    work_name = 'WW' + str(key)
+    elem.nodes[key] = Work(work_name, [elem.work_activity], float(jobs), salary)
+    # add it to the work and zone lists
+    elem.work_list.append(elem.nodes[key])
     elem.zone_list.append(elem.nodes[key])
 
 def add_person(key, work_key, home_key, population):
@@ -61,20 +68,13 @@ def add_person(key, work_key, home_key, population):
     person = Person(person_name, work, home)
     elem.persons[key] = person
     elem.person_list.append(person)
-    elem.person_flows[person] = population
+    elem.person_flows[person] = float(population)
     
 def set_corr(a, b, corr):
     pa = elem.persons[a]
     pb = elem.persons[b]
     conf.corr[(pa,pb)] = corr
     conf.corr[(pb,pa)] = corr
-
-def add_work(key, jobs, salary):
-    work_name = 'WW' + str(key)
-    elem.nodes[key] = Work(work_name, [elem.work_activity], jobs, salary)
-    # add it to the work and zone lists
-    elem.work_list.append(elem.nodes[key])
-    elem.zone_list.append(elem.nodes[key])
 
 def add_sidewalk(key, head_name, tail_name, walk_time, capacity):
     sidewalk_name = 'SW' + str(key)
