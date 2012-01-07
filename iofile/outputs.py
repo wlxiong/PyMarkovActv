@@ -1,7 +1,7 @@
 # export data to file
-from shared.universe import conf, elem, util, flow, prob
+from shared.universe import conf, elem, util, flow, prob, stat
 from utils.convert import min2slice
-from utils.get import get_move_flow
+from utils.get import get_move_flow, sorted_dict_values
 from planning.markov import Commodity, enum_commodity, enum_state
 from stats.estimator import calc_average_activity_duration, calc_average_temporal_util, calc_population_flows
 from stats.environment import calc_total_emission
@@ -193,7 +193,7 @@ def export_movement_flows(export):
                         print>>export, " !!", 
                     print>>export
 
-def export_choice_volume(export):
+def export_choice_volume(export):    
     print>>export, '\n------- bundle choice -------\n'
     for person in elem.person_list:
         work, home = person.work, person.home
@@ -205,6 +205,11 @@ def export_choice_volume(export):
             comm = Commodity(person, bundle)
             print>>export, "%s\t %6.1f" % (bundle, flow.commodity_steps[comm])
         print>>export
+        # save the statistics for each scenario
+        percent = elem.person_flows[person] / sum(elem.person_flows.values())
+        stat.in_home_flows[conf.corr]     += percent * flow.in_home_flows
+        stat.out_of_home_flows[conf.corr] += percent * flow.out_of_home_flows
+        stat.person_util[conf.corr]       += percent * util.person_util
 
 def export_activity_duration(export):
     print>>export, '\n------- activity duration -------\n'
@@ -232,6 +237,11 @@ def export_activity_duration(export):
         for each_actv in activity_list:
             print>>export, "%12.1f\t" % (average_activity_duration[each_actv]),
         print>>export, "\n"
+        # save the statistics for each scenario
+        percent = flow.commodity_steps[comm] / sum(elem.person_flows.values())
+        stat.average_travel_time[conf.corr]     += percent * average_travel_time
+        stat.joint_activity_duration[conf.corr] += percent * joint_activity_duration
+        stat.indep_activity_duration[conf.corr] += percent * indep_activity_duration
 
 def export_average_temporal_util(export):
     print>>export, '\n------- average temporal utility -------\n'
@@ -258,6 +268,11 @@ def export_average_temporal_util(export):
 def export_total_emission(export):
     print>>export, '\n------- vehicle emission -------\n'
     print>>export, calc_total_emission()
+
+def export_configure(export):
+    print>>export, '\n------- settings -------\n'
+    for key, value in conf.__dict__:
+        print>>export, "%s\t %s" % (key, value)
     
 # export computational results
 def export_data(case_name):
@@ -266,7 +281,7 @@ def export_data(case_name):
     # calculate the statistics
     calc_population_flows()
 
-    # export_configure(fout)
+    export_configure(fout)
     export_choice_volume(fout)
     export_activity_duration(fout)
     
@@ -286,16 +301,19 @@ def export_data(case_name):
     # export_depart_flows(fout)
     # export_movement_flows(fout)
     # export_total_emission(fout)
+    
     fout.close()
 
-##     export_travel_times(fout)
-##     export_aggreg_trip(export_file)
-##     export_activity_trip(export_file)
-##     export_passenger_trip(export_file)
-##     export_state_util(export_file)
-##     export_path_set(export_file)
-##     export_link_flow(export_file)
-
+def export_multi_run_data(case_name):
+    fout = open('logs/multi_run_'+case_name+'.log', 'w')
+    print>>fout, "%s = %s;" % ('corr', sorted(stat.person_util.keys()) )
+    print>>fout, "%s = %s;" % ('joint_duration', sorted_dict_values(stat.joint_activity_duration) )
+    print>>fout, "%s = %s;" % ('indep_duration', sorted_dict_values(stat.indep_activity_duration) )
+    print>>fout, "%s = %s;" % ('travel_time', sorted_dict_values(stat.average_travel_time) )
+    print>>fout, "%s = %s;" % ('out_of_home', sorted_dict_values(stat.out_of_home_flows) )
+    print>>fout, "%s = %s;" % ('in_home', sorted_dict_values(stat.in_home_flows) )
+    print>>fout, "%s = %s;" % ('daily_util', sorted_dict_values(stat.person_util) )
+    
 def main():
     export_data('test')
 
