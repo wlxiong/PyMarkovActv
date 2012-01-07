@@ -14,9 +14,6 @@ def run_multi_scenarios(case_name, corr_list):
 
         # correlations between household members
         set_corr(1, 2, corr)
-        
-        # generate utils
-        gen_solo_activity_util()
 
         # run the iterative procedure 
         find_fixed_point(4, case_name, corr)
@@ -33,14 +30,20 @@ def run_multi_scenarios(case_name, corr_list):
 def main():
     # initialize the timer
     print_current_time()
+
     # the data set name
     case_name = '6node'
     # load activity data
     load_activity(case_name)
     # load network data
     load_network(case_name)
+
+    # generate path sets
     gen_path_set()
     find_shortest_path()
+    # generate utils
+    gen_solo_activity_util()
+    
     print '\n DATA LOADED'
     print_current_time()
     
