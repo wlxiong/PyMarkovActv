@@ -13,8 +13,7 @@ def export_solo_activity_util(export):
     print>>export
     for timeslice in xrange(min2slice(conf.DAY)+1):
         print>>export, "[%3d]\t" % timeslice, 
-        for actv_name in sorted(elem.activities.keys()):
-            each_actv = elem.activities[actv_name]
+        for each_actv in sorted_dict_values(elem.activities):
             print>>export, "%8.2f\t" % util.solo_util[timeslice][each_actv],
         print>>export
 
@@ -23,21 +22,18 @@ def export_socio_activity_util(export):
     for person in elem.person_list:
         print>>export, "%s" % person
         # print titles
-        for actv_name in sorted(elem.activities.keys()):
-            each_actv = elem.activities[actv_name]
+        for each_actv in sorted_dict_values(elem.activities):
             for each_zone in each_actv.locations:
                 print>>export, "\t%8s" % (each_actv),
         print>>export 
-        for actv_name in sorted(elem.activities.keys()):
-            each_actv = elem.activities[actv_name]
+        for each_actv in sorted_dict_values(elem.activities):
             for each_zone in each_actv.locations:
                 print>>export, "\t%8s" % (each_zone),
         print>>export
         # print utility
         for timeslice in xrange(min2slice(conf.DAY)+1):
             print>>export, "[%3d]\t" % timeslice, 
-            for actv_name in sorted(elem.activities.keys()):
-                each_actv = elem.activities[actv_name]
+            for each_actv in sorted_dict_values(elem.activities):
                 for each_zone in each_actv.locations:
                     print>>export, "%8.2f\t" % util.socio_util[person][timeslice][(each_actv,each_zone)],
             print>>export
@@ -49,14 +45,12 @@ def export_activity_choice_prob(export):
         print>>export, "%s" % person
         # print titles
         print>>export, "\t travel", 
-        for actv_name in sorted(elem.activities.keys()):
-            each_actv = elem.activities[actv_name]
+        for each_actv in sorted_dict_values(elem.activities):
             for each_zone in each_actv.locations:
                 print>>export, "\t%8s" % (each_actv),
         print>>export
         print>>export, "\t   road", 
-        for actv_name in sorted(elem.activities.keys()):
-            each_actv = elem.activities[actv_name]
+        for each_actv in sorted_dict_values(elem.activities):
             for each_zone in each_actv.locations:
                 print>>export, "\t%8s" % (each_zone),
         print>>export
@@ -65,8 +59,7 @@ def export_activity_choice_prob(export):
             print>>export, "[%3d]\t" % timeslice, 
             static_percent = sum(prob.activity_choice_prob[person][timeslice].values())
             print>>export, "%8.2f\t" % (1.0 - static_percent), 
-            for actv_name in sorted(elem.activities.keys()):
-                each_actv = elem.activities[actv_name]
+            for each_actv in sorted_dict_values(elem.activities):
                 for each_zone in each_actv.locations:
                     print>>export, "%8.2f\t" % prob.activity_choice_prob[person][timeslice][(each_actv,each_zone)],
             print>>export
@@ -128,14 +121,12 @@ def export_zone_population(export):
 
 def export_activity_population(export):
     print>>export, '\n-------- activity passengers ---------\n'
-    for actv_name in sorted(elem.activities.keys()):
-        each_actv = elem.activities[actv_name]
+    for each_actv in sorted_dict_values(elem.activities):
         print>>export, "\t %s" % (each_actv), 
     print>>export
     for timeslice in xrange(min2slice(conf.DAY)+1):
         print>>export, "[%3d]\t" % timeslice, 
-        for actv_name in sorted(elem.activities.keys()):
-            each_actv = elem.activities[actv_name]
+        for each_actv in sorted_dict_values(elem.activities):
             print>>export, "%08.1f\t" % flow.activity_population[timeslice][each_actv],
         print>>export
 
