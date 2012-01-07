@@ -85,3 +85,14 @@ class FlowVar(object):
         ## mat_zone_passenger = [None] * num_sample
         ## mat_aggrg_trip = [None] * num_sample
 
+class StatVar(object):
+    """ The statistics generated from multipe scenarios
+    """
+    def __init__(self):
+        self.joint_activity_duration = {}
+        self.indep_activity_duration = {}
+        self.average_travel_time = {}
+        self.out_of_home_flows = {}
+        self.in_home_flows = {}
+        self.person_util = {}
+

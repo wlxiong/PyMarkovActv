@@ -9,8 +9,8 @@ class Config(object):
         self.MAX_ITER, self.HORIZON = MAX_ITER, HORIZON
 
         # log file
-        log_file_name = 'debug'+'.log'
-        self.log = open(log_file_name, 'w')
+        self.log_file_name = 'debug'+'.log'
+        self.log = open(self.log_file_name, 'w')
 
         # number of sampling
         self.num_sample = 1

@@ -1,8 +1,9 @@
 # Markov decision process
+from shared.universe import conf
 from iofile.inputs import load_network, load_activity
-from iofile.outputs import export_data
+from iofile.outputs import export_data, export_multi_run_data
 from loading.assign import find_fixed_point
-from viewer.plot import draw_zone_population
+# from viewer.plot import draw_zone_population
 from allocating.generators import gen_solo_activity_util, gen_path_set, find_shortest_path
 from allocating.creators import set_corr
 from stats.timer import print_current_time
@@ -50,7 +51,10 @@ def main():
     # run multiple scenarios
     run_multi_scenarios(case_name, [1.0])
     
+    # export multi-run data
+    export_multi_run_data(case_name)
+    
 if __name__ == '__main__':
-    import sys
+    # import sys
     # sys.path.append('/Users/xiongyiliang/Projects/PyMarkovActv/')
     main()
