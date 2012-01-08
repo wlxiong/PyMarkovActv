@@ -12,3 +12,8 @@ def get_move_step(move):
     if move not in flow.movement_steps:
         flow.movement_steps[move] = 0.0
     return flow.movement_steps[move]
+
+def sorted_dict_values(adict):
+    keys = adict.keys( )
+    keys.sort( )
+    return [adict[key] for key in keys]

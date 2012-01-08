@@ -15,9 +15,9 @@ class Road(Vector):
         self.head_node.add_adjacent_vector(self)
 
     def calc_travel_time(self, move_flow):
-        if move_flow > self.capacity * 8:
-            print "%s: %s / %s" % (self, move_flow, self.capacity)
-            raise PendingDeprecationWarning('Road capacity excess (8x)! ')
+        if move_flow / self.capacity > 4.0:
+            print "  !! %s: %s / %s > 4.0" % (self, move_flow, self.capacity)
+            # raise PendingDeprecationWarning('Road capacity excess (20x)! ')
         self.travel_time = self.drive_time*(1.0 + .15*math.pow(move_flow/self.capacity, 4.0))
         return self.travel_time
 

@@ -8,6 +8,8 @@ class Element(object):
         # 1-dimension list nested in 2-dimension dict, 
         # i.e. paths[origin][destination][path_id]
         self.paths = {}
+        # 2-dimension dict, i.e. paths[origin][destination]
+        self.shortest_path = {}
         # 1-dimension dict, i.e. lines[line_id]
         self.lines = {}
         # 1-dimension dict, i.e. walks[walk_id]
@@ -38,8 +40,16 @@ class Element(object):
         self.work_activity = None
         
         # choice alternatives
-        self.work_alt = {}
-        self.housing_alt = {}
+        self.person_alt = {}
         self.in_home_alt = {}
         self.out_of_home_alt = {}
         self.bundle_alt = {}
+
+        # persons in the household
+        # 1-dimension dict, i.e. persons[person_id]
+        self.persons = {}
+        # 1-dimension list
+        self.person_list = []
+        # 1-dimension dict, i.e. person_flows[person]
+        self.person_flows = {}
+        

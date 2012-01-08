@@ -9,7 +9,7 @@ class Activity(object):
     "Each activity is specified as a set of confeters which determine its marginal utility. "
     def __init__(self, name, U0, Um, Sigma, Lambda, Xi, \
                  time_win, min_duration, \
-                 is_madatory = 0, pref_timing = 0):
+                 is_joint = 0, is_madatory = 0, pref_timing = 0):
         ''' U0 is the baseline utility level of acivity. 
             Um is the maximum utility of activity. 
             Sigma determines the slope or steepness of the curve. 
@@ -19,9 +19,9 @@ class Activity(object):
             min_duration is the minimum duration for this activity. 
         '''
         # activity type
-        self.name, self.is_madatory, self.pref_timing = name, is_madatory, pref_timing
+        self.name, self.is_joint, self.is_madatory, self.pref_timing = name, is_joint, is_madatory, pref_timing
         # utility function parameters
-        self.U0, self.Um = U0, Um
+        self.U0, self.Um, self.Ur = U0, Um, Um
         self.Sigma, self.Lambda, self.Xi = Sigma, Lambda, Xi
         # spatial and temproal constraints
         self.locations = []
@@ -33,6 +33,9 @@ class Activity(object):
         
     def __repr__(self):
         return "%s" % (self.name)
+
+    def __cmp__(self, other):
+        return cmp(self.name, other.name)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -85,3 +88,19 @@ class Bundle(object):
     def __eq__(self, other):
         return self.name == other.name
 
+class Person(object):
+    """ Each individual has his/her own work-home pair. 
+    """
+    def __init__(self, name, work, home):
+        self.name = name
+        self.work, self.home = work, home
+
+    def __repr__(self):
+        return "%s@(%s-%s)" % (self.name, self.work, self.home)
+
+    def __hash__(self):
+        return int(hashlib.md5(repr(self)).hexdigest(), 16)
+
+    def __eq__(self, other):
+        return self.work == other.work and \
+               self.home == other.home

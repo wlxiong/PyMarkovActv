@@ -1,52 +1,70 @@
 # some statistics for the simulation
-from shared.universe import conf, flow
-from planning.markov import enum_commodity, enum_state, enum_transition
+from shared.universe import conf, flow, util, elem, prob
+from planning.markov import enum_commodity, enum_state
+from loading.init import init_zone_population, init_activity_population, init_static_population
 from utils.convert import min2slice
 
 def calc_average_activity_duration(commodity):
-    sum_duration = {}
-    average_duration = {}
+    average_activity_duration = {}
+    # initialize average duration
     for activity in commodity.bundle.activity_set:
-        sum_duration[activity] = 0.0
-        average_duration[activity] = 0.0
+        average_activity_duration[activity] = 0.0
+    # average duration
     for timeslice in xrange(min2slice(conf.DAY)):
         for state in enum_state(commodity, timeslice):
-            sum_duration[state.activity] += flow.state_flows[commodity][timeslice][state]
-    for activity in commodity.bundle.activity_set:
-        sum_duration[activity] = sum_duration[activity] * conf.TICK
-        average_duration[activity] = sum_duration[activity] / flow.commodity_flows[commodity]
-    nontravel_duration = sum(average_duration.values())
-    average_duration['travel'] = 1440 - nontravel_duration
-    return average_duration
+            average_activity_duration[state.activity] += conf.TICK * \
+                flow.state_flows[commodity][timeslice][state] / flow.commodity_steps[commodity]
+    # average travel time
+    average_travel_time = 1440 - sum(average_activity_duration.values())
+    return average_activity_duration, average_travel_time
 
-def calc_aggregate_flows():
-    # calculate aggregate flow variables based on transition flows
+def calc_joint_time_use():
+    calc_joint_time_use = {}
+    for person in elem.person_list:
+        calc_joint_time_use[person] = 0.0
+        for other in elem.person_list:
+            if (person, other) in conf.corr: 
+                for timeslice in xrange(min2slice(conf.DAY)+1):
+                    for each_actv in elem.activities.values():
+                        for each_zone in each_actv.locations:
+                            if each_actv.is_joint:
+                                calc_joint_time_use[person] += conf.TICK * \
+                                prob.activity_choice_prob[other][timeslice][(each_actv,each_zone)]
+    return calc_joint_time_use
+
+def calc_average_temporal_util(commodity):
+    average_temporal_utility = {}
+    average_travel_disutil = {}
+    for timeslice in xrange(min2slice(conf.DAY)+1):
+        # initialize temporal utility
+        average_temporal_utility[timeslice] = 0.0
+        for state in enum_state(commodity, timeslice):
+            # average temporal utility 
+            average_temporal_utility[timeslice] += (util.solo_util[timeslice][state.activity] + \
+                util.socio_util[commodity.person][timeslice][(state.activity,state.zone)])* \
+                flow.state_flows[commodity][timeslice][state] / flow.commodity_steps[commodity]
+    # travel disutility
+    for timeslice in xrange(min2slice(conf.DAY)+1):
+        average_travel_disutil[timeslice] = (flow.commodity_steps[commodity] - \
+                                             flow.static_population[commodity][timeslice]) * \
+                                             conf.ALPHA_car / flow.commodity_steps[commodity]
+    return average_temporal_utility, average_travel_disutil
+
+def calc_population_flows():
+    # initialize the population flows
+    init_zone_population(0.0)
+    init_activity_population(0.0)
+    init_static_population(0.0)
+    # calculate population flow variables based on state flows
     for comm in enum_commodity():
-        # from the beginning to the ending
-        for timeslice in xrange(min2slice(conf.DAY)):
+        for timeslice in xrange(min2slice(conf.DAY)+1):
             for state in enum_state(comm, timeslice):
-                for transition_info in enum_transition(comm, timeslice, state):
-                    transition = transition_info[0]
-                    starting_time = transition_info[1]
-                    # calculate zone population
-                    flow.zone_population[starting_time][transition.state.zone] = \
-                        flow.zone_population[starting_time][transition.state.zone] + \
-                        flow.transition_flows[comm][timeslice][state][transition]
-                    # calculate activity population
-                    flow.actv_population[starting_time][transition.state.activity] = \
-                        flow.actv_population[starting_time][transition.state.activity] + \
-                        flow.transition_flows[comm][timeslice][state][transition]
-                    # calculate O-D trips
-                    flow.OD_trips[timeslice][state.zone][transition.state.zone] = \
-                        flow.OD_trips[timeslice][state.zone][transition.state.zone] + \
-                        flow.transition_flows[comm][timeslice][state][transition]
-
-def calc_activity_duration_variance():
-    pass
-
-def calc_average_wait_time():
-    pass
-
-def calc_average_schedule_delay():
-    pass
-
+                # calculate static population
+                flow.static_population[comm][timeslice] += \
+                    flow.state_flows[comm][timeslice][state]
+                # calculate zone population
+                flow.zone_population[timeslice][state.zone] += \
+                    flow.state_flows[comm][timeslice][state]
+                # calculate activity population
+                flow.activity_population[timeslice][state.activity] += \
+                    flow.state_flows[comm][timeslice][state]

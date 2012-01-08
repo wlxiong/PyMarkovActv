@@ -1,5 +1,5 @@
 # Solve transportation problem using PuLP modeler functions
-from pulp import makeDict, LpProblem, LpMinimize, LpContinuous, LpVariable, LpStatus, lpSum, value
+from pulp import makeDict, LpProblem, LpMinimize, LpContinuous, LpVariable, LpStatus, lpSum, value, solvers
 
 class TransProblem(object):
     def __init__(self, home_list, work_list, util_matrix):
@@ -40,7 +40,7 @@ class TransProblem(object):
         self.prob.writeLP("ResidentialLocationChoiceProblem.lp")
 
         # The problem is solved using PuLP's choice of Solver
-        self.prob.solve()
+        self.prob.solve(solvers.GLPK())
         
         # print the utility matrix
         print "Utility Matrix", self.util_matrix
@@ -83,7 +83,7 @@ def main():
     
 if __name__ == '__main__':
     import sys
-    sys.path.append('/Users/xiongyiliang/Workspace/Research/PyMarkovActv/src/')
+    sys.path.append('/Users/xiongyiliang/Projects/PyMarkovActv/')
     from shared.universe import elem
     from iofile.inputs import load_network, load_activity
     main()
