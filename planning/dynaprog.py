@@ -24,7 +24,7 @@ def calc_socio_activity_util():
                             if each_actv.is_joint:
                                 util.socio_util[person][timeslice][(each_actv,each_zone)] = \
                                     prob.activity_choice_prob[other][timeslice][(each_actv,each_zone)] * \
-                                    corr * util.solo_util[timeslice][each_actv]
+                                    5.0 * corr * util.solo_util[timeslice][each_actv]
                             else:
                                 util.socio_util[person][timeslice][(each_actv,each_zone)] = 0.0
 

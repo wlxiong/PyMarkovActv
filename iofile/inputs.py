@@ -10,13 +10,13 @@ from allocating.creators import add_line, add_road, add_zone, add_home, add_work
 
 def creat_activity_6node():
 ##  add_activity(name, U0, Um, Sigma, Lambda, Xi, time_win, min_duration, is_joint, is_madatory, pref_timing):
-    add_activity('home-am',          1.0, 400, -0.008, 1.0,   720, (0, 1440), 360, 1, 0, -1)
-    add_activity('home-pm',          1.0, 400, -0.008, 1.0,   720, (0, 1440), 360, 1, 0, -1)
-    add_activity('work',             0.0,1000,  0.010, 1.0,   720, (0, 1440), 240, 0, 1, 540)
-    add_activity('restaurent',       0.0, 360,  0.010, 1.0,  1110, (0, 1440),  10, 0, 0, -1)
-    add_activity('joint-restaurent', 0.0, 360,  0.010, 1.0,  1110, (0, 1440),  10, 1, 0, -1)
-    add_activity('shopping',         0.0, 400,  0.010, 1.0,  1170, (0, 1440),  10, 0, 0, -1)
-    add_activity('joint-shopping',   0.0, 400,  0.010, 1.0,  1170, (0, 1440),  10, 1, 0, -1)
+    add_activity('home-am',          1.0, 600, -0.010, 1.0,   720, (  0,  720), 360, 1, 0,  -1)
+    add_activity('home-pm',          1.0, 600, -0.010, 1.0,   720, (720, 1440), 360, 1, 0,  -1)
+    add_activity('work',             0.0,1600,  0.010, 1.0,   720, (240, 1440), 240, 0, 1, 540)
+    add_activity('restaurent',       0.0, 320,  0.010, 1.0,  1170, (720, 1440),  10, 0, 0,  -1)
+    add_activity('joint-restaurent', 0.0, 100,  0.010, 1.0,  1170, (720, 1440),  10, 1, 0,  -1)
+    add_activity('shopping',         0.0, 360,  0.010, 1.0,  1110, (720, 1440),  10, 0, 0,  -1)
+    add_activity('joint-shopping',   0.0, 120,  0.010, 1.0,  1110, (720, 1440),  10, 1, 0,  -1)
     
 def creat_activity_bundle_6node():
 #   add_bundle(key, activity_name_list)
@@ -86,8 +86,8 @@ def creat_traffic_zone_6node():
     add_person(1, 10, 30, 10000)
     add_person(2, 20, 30, 10000)
 
-    add_zone(40,   ['joint-restaurent'])
-    add_zone(50,   ['joint-shopping'])
+    add_zone(40,   ['restaurent', 'joint-restaurent'])
+    add_zone(50,   ['shopping', 'joint-shopping'])
     add_zone(60,   ['shopping', 'restaurent'])
 
     elem.zone_list.sort()
