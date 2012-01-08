@@ -17,7 +17,7 @@ def run_multi_scenarios(case_name, corr_list):
         set_corr(1, 2, corr)
 
         # run the iterative procedure 
-        find_fixed_point(8, case_name, corr)
+        find_fixed_point(2, case_name, corr)
 
         # output the raw results
         # export_data(case_name+'_r'+str(corr))
@@ -47,7 +47,7 @@ def main():
     
     # run multiple scenarios
     corr_list = [corr/10.0 for corr in range(10,-1,-1)]
-    run_multi_scenarios(case_name, corr_list)
+    run_multi_scenarios(case_name, [0.0])
     
     # export multi-run data
     export_multi_run_data(case_name)

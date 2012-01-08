@@ -13,10 +13,10 @@ def creat_activity_6node():
     add_activity('home-am',          1.0, 400, -0.008, 1.0,   720, (0, 1440), 360, 1, 0, -1)
     add_activity('home-pm',          1.0, 400, -0.008, 1.0,   720, (0, 1440), 360, 1, 0, -1)
     add_activity('work',             0.0,1000,  0.010, 1.0,   720, (0, 1440), 240, 0, 1, 540)
-    add_activity('restaurent',       0.0, 400,  0.012, 1.0,  1110, (0, 1440),  10, 0, 0, -1)
-    add_activity('joint-restaurent', 0.0, 400,  0.012, 1.0,  1110, (0, 1440),  10, 1, 0, -1)
-    add_activity('shopping',         0.0, 450,  0.010, 1.0,  1170, (0, 1440),  10, 0, 0, -1)
-    add_activity('joint-shopping',   0.0, 450,  0.010, 1.0,  1170, (0, 1440),  10, 1, 0, -1)
+    add_activity('restaurent',       0.0, 360,  0.010, 1.0,  1110, (0, 1440),  10, 0, 0, -1)
+    add_activity('joint-restaurent', 0.0, 360,  0.010, 1.0,  1110, (0, 1440),  10, 1, 0, -1)
+    add_activity('shopping',         0.0, 400,  0.010, 1.0,  1170, (0, 1440),  10, 0, 0, -1)
+    add_activity('joint-shopping',   0.0, 400,  0.010, 1.0,  1170, (0, 1440),  10, 1, 0, -1)
     
 def creat_activity_bundle_6node():
 #   add_bundle(key, activity_name_list)
@@ -86,10 +86,9 @@ def creat_traffic_zone_6node():
     add_person(1, 10, 30, 10000)
     add_person(2, 20, 30, 10000)
 
-    # add_zone(20,   ['restaurent', 'joint-restaurent'])
     add_zone(40,   ['joint-restaurent'])
     add_zone(50,   ['joint-shopping'])
-    add_zone(60,   ['shopping'])
+    add_zone(60,   ['shopping', 'restaurent'])
 
     elem.zone_list.sort()
 
