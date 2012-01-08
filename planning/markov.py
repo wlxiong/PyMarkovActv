@@ -88,9 +88,6 @@ def enum_state(commodity, timeslice):
             todo_set = frozenset(todo_list + (elem.home_pm_activity , ))
             # pick up each activity in the todo list
             for each_actv in todo_list:
-                if each_actv.time_win[0] > timeslice or \
-                   timeslice > each_actv.time_win[1]:
-                    continue
                 # choose one location for the activity
                 for position in each_actv.locations:
                     yield State(each_actv, position, todo_set)
@@ -108,6 +105,9 @@ def enum_path(timeslice, this_zone, next_zone):
 
 def enum_transition(commodity, timeslice, state):
     for next_actv in state.todo:
+        if next_actv.time_win[0] > timeslice or \
+           timeslice > next_actv.time_win[1]:
+            continue
         if next_actv == elem.home_pm_activity and len(state.todo) > 2:
                 continue
         else:
