@@ -3,7 +3,8 @@ from shared.universe import conf, elem, util, flow, prob, stat
 from utils.convert import min2slice
 from utils.get import get_move_flow, sorted_dict_values
 from planning.markov import Commodity, enum_commodity, enum_state
-from stats.estimator import calc_average_activity_duration, calc_average_temporal_util, calc_population_flows
+from stats.estimator import calc_average_activity_duration, calc_joint_time_use
+from stats.estimator import calc_average_temporal_util, calc_population_flows
 from stats.environment import calc_total_emission
 
 def export_solo_activity_util(export):
@@ -214,6 +215,9 @@ def export_activity_duration(export):
     stat.average_travel_time[corr[0]]     = 0.0
     stat.joint_activity_duration[corr[0]] = 0.0
     stat.indep_activity_duration[corr[0]] = 0.0
+    # calculate joint time use 
+    joint_time_use = calc_joint_time_use()
+    stat.joint_time_use[corr[0]] = sum(joint_time_use.values())/len(joint_time_use)
     for comm in enum_commodity():
         print>>export, " [%s] " % comm
         activity_list = sorted(list(comm.bundle.activity_set))
@@ -309,6 +313,7 @@ def export_multi_run_data(case_name):
     # export to a MATLAB script file
     fout = open('logs/multi_run_'+case_name+'.m', 'w')
     print>>fout, "%s = %s;" % ('corr', sorted(stat.person_util.keys()) )
+    print>>fout, "%s = %s;" % ('joint_time', sorted_dict_values(stat.joint_time_use) )
     print>>fout, "%s = %s;" % ('joint_duration', sorted_dict_values(stat.joint_activity_duration) )
     print>>fout, "%s = %s;" % ('indep_duration', sorted_dict_values(stat.indep_activity_duration) )
     print>>fout, "%s = %s;" % ('travel_time', sorted_dict_values(stat.average_travel_time) )

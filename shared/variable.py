@@ -89,6 +89,7 @@ class StatVar(object):
     """ The statistics generated from multipe scenarios
     """
     def __init__(self):
+        self.joint_time_use = {}
         self.joint_activity_duration = {}
         self.indep_activity_duration = {}
         self.average_travel_time = {}
