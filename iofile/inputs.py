@@ -24,17 +24,17 @@ def creat_activity_bundle_6node():
     add_bundle(0, ['home-am', 'home-pm'])
     add_bundle(1, ['home-am', 'home-pm', 'work'])
 
-    # add_bundle(2, ['home-am', 'home-pm', 'work', 'shopping'])
-    # add_bundle(3, ['home-am', 'home-pm', 'work', 'restaurent'])
-    # 
-    # add_bundle(4, ['home-am', 'home-pm', 'work', 'shopping', 'restaurent'])
+    add_bundle(2, ['home-am', 'home-pm', 'work', 'shopping'])
+    add_bundle(3, ['home-am', 'home-pm', 'work', 'restaurent'])
+    
+    add_bundle(4, ['home-am', 'home-pm', 'work', 'shopping', 'restaurent'])
 
     # joint activities
     add_bundle(5, ['home-am', 'home-pm', 'work', 'joint-shopping'])
     add_bundle(6, ['home-am', 'home-pm', 'work', 'joint-restaurent'])
     
-    # add_bundle(7, ['home-am', 'home-pm', 'work', 'joint-shopping', 'restaurent'])
-    # add_bundle(8, ['home-am', 'home-pm', 'work', 'shopping', 'joint-restaurent'])
+    add_bundle(7, ['home-am', 'home-pm', 'work', 'joint-shopping', 'restaurent'])
+    add_bundle(8, ['home-am', 'home-pm', 'work', 'shopping', 'joint-restaurent'])
     add_bundle(9, ['home-am', 'home-pm', 'work', 'joint-shopping', 'joint-restaurent'])
     
     elem.in_home_bundle = elem.bundles[0]

@@ -186,6 +186,11 @@ def export_movement_flows(export):
 
 def export_choice_volume(export):    
     print>>export, '\n------- bundle choice -------\n'
+    # initialize
+    corr = conf.corr.values()
+    stat.in_home_flows[corr[0]]     = 0.0
+    stat.out_of_home_flows[corr[0]] = 0.0
+    stat.person_util[corr[0]]       = 0.0
     for person in elem.person_list:
         work, home = person.work, person.home
         print>>export, "[Person %s, Population %6.1f]]" % (person, elem.person_flows[person])
@@ -198,12 +203,17 @@ def export_choice_volume(export):
         print>>export
         # save the statistics for each scenario
         percent = elem.person_flows[person] / sum(elem.person_flows.values())
-        stat.in_home_flows[conf.corr]     += percent * flow.in_home_flows
-        stat.out_of_home_flows[conf.corr] += percent * flow.out_of_home_flows
-        stat.person_util[conf.corr]       += percent * util.person_util
+        stat.in_home_flows[corr[0]]     += percent * flow.in_home_flows[person]
+        stat.out_of_home_flows[corr[0]] += percent * flow.out_of_home_flows[person]
+        stat.person_util[corr[0]]       += percent * util.person_util[person]
 
 def export_activity_duration(export):
     print>>export, '\n------- activity duration -------\n'
+    # initialize
+    corr = conf.corr.values()
+    stat.average_travel_time[corr[0]]     = 0.0
+    stat.joint_activity_duration[corr[0]] = 0.0
+    stat.indep_activity_duration[corr[0]] = 0.0
     for comm in enum_commodity():
         print>>export, " [%s] " % comm
         activity_list = sorted(list(comm.bundle.activity_set))
@@ -230,9 +240,9 @@ def export_activity_duration(export):
         print>>export, "\n"
         # save the statistics for each scenario
         percent = flow.commodity_steps[comm] / sum(elem.person_flows.values())
-        stat.average_travel_time[conf.corr]     += percent * average_travel_time
-        stat.joint_activity_duration[conf.corr] += percent * joint_activity_duration
-        stat.indep_activity_duration[conf.corr] += percent * indep_activity_duration
+        stat.average_travel_time[corr[0]]     += percent * average_travel_time
+        stat.joint_activity_duration[corr[0]] += percent * joint_activity_duration
+        stat.indep_activity_duration[corr[0]] += percent * indep_activity_duration
 
 def export_average_temporal_util(export):
     print>>export, '\n------- average temporal utility -------\n'
@@ -262,8 +272,8 @@ def export_total_emission(export):
 
 def export_configure(export):
     print>>export, '\n------- settings -------\n'
-    for key, value in conf.__dict__:
-        print>>export, "%s\t %s" % (key, value)
+    for key in sorted(conf.__dict__.keys()):
+        print>>export, "%16s\t%s" % (key, conf.__dict__[key])
     
 # export computational results
 def export_data(case_name):
@@ -296,7 +306,8 @@ def export_data(case_name):
     fout.close()
 
 def export_multi_run_data(case_name):
-    fout = open('logs/multi_run_'+case_name+'.log', 'w')
+    # export to a MATLAB script file
+    fout = open('logs/multi_run_'+case_name+'.m', 'w')
     print>>fout, "%s = %s;" % ('corr', sorted(stat.person_util.keys()) )
     print>>fout, "%s = %s;" % ('joint_duration', sorted_dict_values(stat.joint_activity_duration) )
     print>>fout, "%s = %s;" % ('indep_duration', sorted_dict_values(stat.indep_activity_duration) )

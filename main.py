@@ -1,7 +1,6 @@
 # Markov decision process
-from shared.universe import conf
 from iofile.inputs import load_network, load_activity
-from iofile.outputs import export_data, export_multi_run_data
+from iofile.outputs import export_multi_run_data
 from loading.assign import find_fixed_point
 # from viewer.plot import draw_zone_population
 from allocating.generators import gen_solo_activity_util, gen_path_set, find_shortest_path
@@ -11,20 +10,18 @@ from stats.timer import print_current_time
 def run_multi_scenarios(case_name, corr_list):
     # try distinct corrs
     for corr in corr_list:
-        print '\n***   corr = %f   ***\n' % corr
+        print "       data set: %s" % case_name
+        print "    correlation: %.2f" % corr
 
         # correlations between household members
         set_corr(1, 2, corr)
 
         # run the iterative procedure 
-        find_fixed_point(4, case_name, corr)
+        find_fixed_point(8, case_name, corr)
 
         # output the raw results
-        export_data(case_name+'_r'+str(corr))
-        print "\n [export data]"
-        print "       data set: %s" % case_name
-        print "    correlation: %f" % corr
-        print_current_time()
+        # export_data(case_name+'_r'+str(corr))
+
         # generate visual results
         # draw_zone_population(4)
 
@@ -49,7 +46,8 @@ def main():
     print_current_time()
     
     # run multiple scenarios
-    run_multi_scenarios(case_name, [1.0])
+    corr_list = [corr/10.0 for corr in range(10,-1,-1)]
+    run_multi_scenarios(case_name, corr_list)
     
     # export multi-run data
     export_multi_run_data(case_name)

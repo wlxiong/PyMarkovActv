@@ -67,4 +67,7 @@ def find_fixed_point(N, case_name, corr):
         update_commodity_flows(iter_num)
         print_current_time()
         
+        print "\n [export data]"
         export_data(case_name+'_r'+str(corr)+'_n'+str(iter_num))
+        print_current_time()
+        
