@@ -4,20 +4,29 @@ from utils.convert import min2slice
 from shared.universe import conf, util, prob, elem, flow
 from planning.markov import enum_commodity, enum_state, enum_transition
 
+def calc_activity_choice_prob():
+    # activity/zone choice probability
+    for comm in enum_commodity():
+        for timeslice in xrange(min2slice(conf.DAY)+1):
+            for state in enum_state(comm, timeslice):
+                    prob.activity_choice_prob[comm.person][timeslice][(state.activity,state.zone)] += \
+                        flow.state_flows[comm][timeslice][state] / elem.person_flows[comm.person]
+
 def calc_socio_activity_util():
     # social utility
     for person in elem.person_list:
-        for comm in enum_commodity():
-            if (person, comm.person) in conf.corr: 
-                corr = conf.corr[(person, comm.person)]
+        for other in elem.person_list:
+            if (person, other) in conf.corr: 
+                corr = conf.corr[(person, other)]
                 for timeslice in xrange(min2slice(conf.DAY)+1):
-                    for state in enum_state(comm, timeslice):
-                        if state.activity.is_joint:
-                            util.socio_util[person][timeslice][(state.activity,state.zone)] += \
-                                flow.state_flows[comm][timeslice][state] / elem.person_flows[comm.person] * \
-                                corr * util.solo_util[timeslice][state.activity]
-                        else:
-                            util.socio_util[person][timeslice][(state.activity,state.zone)] = 0.0
+                    for each_actv in elem.activities.values():
+                        for each_zone in each_actv.locations:
+                            if each_actv.is_joint:
+                                util.socio_util[person][timeslice][(each_actv,each_zone)] = \
+                                    prob.activity_choice_prob[other][timeslice][(each_actv,each_zone)] * \
+                                    corr * util.solo_util[timeslice][each_actv]
+                            else:
+                                util.socio_util[person][timeslice][(each_actv,each_zone)] = 0.0
 
 def calc_state_util():
     math.exp = math.exp

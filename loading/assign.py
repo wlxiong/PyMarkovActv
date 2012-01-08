@@ -1,7 +1,7 @@
 # compute equilibrium flows
 from shared.universe import flow
 from utils.get import get_move_flow
-from planning.dynaprog import calc_state_util, calc_socio_activity_util
+from planning.dynaprog import calc_state_util, calc_activity_choice_prob, calc_socio_activity_util
 from loading.load import build_choice_model, calc_inclusive_values, calc_commodity_steps, calc_state_flows
 from loading.init import init_flow_variables, init_step_variables
 from loading.init import init_state_util, init_transition_choice_prob, init_activity_choice_prob, init_socio_activity_util
@@ -56,9 +56,8 @@ def find_fixed_point(N, case_name, corr):
         print_current_time()
         
         print '\n [intra-household interaction]'
-        # init_activity_choice_prob()
-        # calc_activity_choice_prob()
-        init_socio_activity_util()
+        init_activity_choice_prob()
+        calc_activity_choice_prob()
         calc_socio_activity_util()
         print_current_time()
         
