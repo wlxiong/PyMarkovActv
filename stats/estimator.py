@@ -24,7 +24,7 @@ def calc_joint_time_use():
         calc_joint_time_use[person] = 0.0
         for other in elem.person_list:
             if (person, other) in conf.corr: 
-                for timeslice in xrange(min2slice(conf.DAY)+1):
+                for timeslice in xrange(min2slice(conf.DAY)):
                     for each_actv in elem.activities.values():
                         for each_zone in each_actv.locations:
                             if each_actv.is_joint:
