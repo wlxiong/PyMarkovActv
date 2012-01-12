@@ -47,7 +47,7 @@ def main():
     
     # run multiple scenarios
     corr_list = [corr/10.0 for corr in range(10,-1,-1)]
-    run_multi_scenarios(case_name, [0.0])
+    run_multi_scenarios(case_name, corr_list)
     
     # export multi-run data
     export_multi_run_data(case_name)
