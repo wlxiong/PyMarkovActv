@@ -16,7 +16,7 @@ def run_multi_scenarios(case_name, corr_list):
         # correlations between household members
         set_corr(1, 2, corr)
 
-        # run the iterative procedure 
+        # run the iterative procedure
         find_fixed_point(2, case_name, corr)
 
         # output the raw results
@@ -41,18 +41,18 @@ def main():
     find_shortest_path()
     # generate utils
     gen_solo_activity_util()
-    
+
     print '\n DATA LOADED'
     print_current_time()
-    
+
     # run multiple scenarios
     corr_list = [corr/10.0 for corr in range(10,-1,-1)]
     run_multi_scenarios(case_name, corr_list)
-    
+
     # export multi-run data
     export_multi_run_data(case_name)
-    
+
 if __name__ == '__main__':
-    # import sys
-    # sys.path.append('/Users/xiongyiliang/Projects/PyMarkovActv/')
+    # import cProfile
+    # cProfile.run('main()', 'main_profile.log')
     main()
