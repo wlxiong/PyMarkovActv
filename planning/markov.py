@@ -14,57 +14,61 @@ from itertools import combinations
 
 
 class Commodity(object):
-    """ The commodity is the cross product of the set of household members and the set of activity bundles. 
-        Or the activity bundles are enumerated implicitly. 
+    """ The commodity is the cross product of the set of household members and the set of activity bundles.
+        Or the activity bundles are enumerated implicitly.
     """
     def __init__(self, person, bundle):
         self.person, self.bundle = person, bundle
         self.work, self.home = person.work, person.home
+        self.id = "%s>%s" % (self.person, self.bundle)
         self.init_state = State(elem.home_am_activity, self.home, self.bundle.activity_set)
         self.term_state = State(elem.home_pm_activity, self.home, frozenset([elem.home_pm_activity]))
-        
+
     def __repr__(self):
-        return "%s>%s" % (self.person, self.bundle)
-        
+        return self.id
+
     def __hash__(self):
-        return int(hashlib.md5(repr(self)).hexdigest(), 16)
-        
+        # return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        return hash(repr(self))
+
     def __eq__(self, other):
         return self.person == other.person and \
                self.bundle == other.bundle
 
-    
+
 class State(object):
     """ The state contains the position of the traveler (zone), the activity participated
-        and --lagged variable (autoregressive process)--, excluding timeslice. 
+        and --lagged variable (autoregressive process)--, excluding timeslice.
     """
     def __init__(self, activity, zone, todo):
-        self.zone, self.activity, self.todo = zone, activity, todo 
-        
+        self.zone, self.activity, self.todo = zone, activity, todo
+
     def __repr__(self):
         return "%s-%s-%s" % (self.zone, self.activity, sorted(self.todo))
-        
+
     def __hash__(self):
-        return int(hashlib.md5(repr(self)).hexdigest(), 16)
-        
+        # return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        return hash(repr(self))
+
     def __eq__(self, other):
         return self.activity == other.activity and \
                self.zone == other.zone and \
                self.todo == other.todo
 
-    
+
 class Transition(object):
-    """ Transition defines the next state according to current state, including timeslice. 
+    """ Transition defines the next state according to current state, including timeslice.
     """
     def __init__(self, state, path):
         self.state, self.path = state, path
-        
+
     def __repr__(self):
         return "%s-%s" % (self.state, self.path)
-        
+
     def __hash__(self):
-        return int(hashlib.md5(repr(self)).hexdigest(), 16)
-        
+        # return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        return hash(repr(self))
+
     def __eq__(self, other):
         return self.state == other.state and \
                self.path == other.path
@@ -109,7 +113,7 @@ def enum_transition(commodity, timeslice, state):
            timeslice > next_actv.time_win[1]:
             continue
         if next_actv == elem.home_pm_activity and len(state.todo) > 2:
-                continue
+            continue
         else:
             if next_actv == elem.home_am_activity or next_actv == elem.home_pm_activity:
                 location_set = [commodity.home]
@@ -134,6 +138,5 @@ def enum_transition(commodity, timeslice, state):
                 schedule_delay = 0.0
                 if state.activity <> next_actv:
                     schedule_delay = next_actv.calc_schedule_delay(starting_time)
-                yield (Transition(next_state, each_path), 
+                yield (Transition(next_state, each_path),
                        starting_time, travel_cost, schedule_delay)
-

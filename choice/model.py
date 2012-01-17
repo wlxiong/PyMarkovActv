@@ -31,7 +31,8 @@ class Alternative(object):
         return "%s(%s)" % (self.name, self.parent)
 
     def __hash__(self):
-        return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        # return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        return hash(repr(self))
         
     def add_child(self, new_child):
         self.children.append(new_child)

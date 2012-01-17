@@ -17,6 +17,7 @@ class Path(object):
             self.edges_on_path = []
         else:
             self.edges_on_path = edge_list
+        self.id = "%s" % (self.edges_on_path)
         self.moves_on_path = {}
         self.path_travel_timeslice = {}
         self.path_travel_time = {}
@@ -42,10 +43,11 @@ class Path(object):
                self.edges_on_path == other.edges_on_path
         
     def __hash__(self):
-        return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        # return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        return hash(repr(self))
         
     def __repr__(self):
-        return "%s" % (self.edges_on_path)
+        return self.id
 
     def init_movements(self):
         self.moves_on_path = {}

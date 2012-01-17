@@ -29,10 +29,11 @@ class Activity(object):
         self.min_duration = min2slice(min_duration)
         
     def __hash__(self):
-        return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        # return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        return hash(self.name)
         
     def __repr__(self):
-        return "%s" % (self.name)
+        return self.name
 
     def __cmp__(self, other):
         return cmp(self.name, other.name)
@@ -78,12 +79,14 @@ class Bundle(object):
     def __init__(self, name, activity_list):
         self.name = name
         self.activity_set = frozenset(activity_list)
+        self.id = "%s" % (sorted(self.activity_set))
 
     def __hash__(self):
-        return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        # return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        return hash(repr(self))
         
     def __repr__(self):
-        return "%s" % (sorted(self.activity_set))
+        return self.id
 
     def __eq__(self, other):
         return self.name == other.name
@@ -94,12 +97,14 @@ class Person(object):
     def __init__(self, name, work, home):
         self.name = name
         self.work, self.home = work, home
+        self.id = "%s@(%s-%s)" % (self.name, self.work, self.home)
 
     def __repr__(self):
-        return "%s@(%s-%s)" % (self.name, self.work, self.home)
+        return self.id
 
     def __hash__(self):
-        return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        # return int(hashlib.md5(repr(self)).hexdigest(), 16)
+        return hash(repr(self))
 
     def __eq__(self, other):
         return self.work == other.work and \

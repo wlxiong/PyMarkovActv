@@ -83,8 +83,8 @@ def creat_traffic_zone_6node():
     # add_home(40,   20000, 0.0)
     
     # persons in the household
-    add_person(1, 10, 30, 30000)
-    add_person(2, 20, 30, 30000)
+    add_person(1, 10, 30, 10000)
+    add_person(2, 20, 30, 10000)
 
     add_zone(40,   ['restaurent', 'joint-restaurent'])
     add_zone(50,   ['shopping', 'joint-shopping'])
