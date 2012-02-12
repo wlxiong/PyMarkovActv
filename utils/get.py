@@ -16,4 +16,4 @@ def get_move_step(move):
 def sorted_dict_values(adict):
     keys = adict.keys( )
     keys.sort( )
-    return [adict[key] for key in keys]
+    return map(adict.get, keys)

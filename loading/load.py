@@ -62,7 +62,7 @@ def add_movement_steps(path, timeslice, add_step):
 def calc_state_flows():
     # calculate flow variables based on state optimal utility
     for comm in enum_commodity():
-        print "    %s" % comm
+        # print "    %s" % comm
         # from the beginning to the ending
         for timeslice in xrange(min2slice(conf.DAY)):
             for state in enum_state(comm, timeslice):
