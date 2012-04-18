@@ -1,7 +1,7 @@
 # Activity class
 import math
 import hashlib
-import scipy.integrate as integrate
+from mpmath import quad
 from utils.convert import min2slice, slice2min
 from shared.universe import conf
 
@@ -55,10 +55,10 @@ class Activity(object):
         lower = slice2min(timeslice) - conf.TICK/2.0
         upper = lower + conf.TICK
         if timeslice == 0:
-            ans = integrate.quad(self.marginal_util, 0.0, conf.TICK/2.0)[0] + \
-                integrate.quad(self.marginal_util, conf.DAY-conf.TICK/2.0, conf.DAY)[0]
+            ans = quad(self.marginal_util, [0.0, conf.TICK/2.0]) + \
+                  quad(self.marginal_util, [conf.DAY-conf.TICK/2.0, conf.DAY])
         else:
-            ans = integrate.quad(self.marginal_util, lower, upper)[0]
+            ans = quad(self.marginal_util, [lower, upper])
         return ans
 
     def calc_schedule_delay(self, timeslice):
