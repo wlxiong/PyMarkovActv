@@ -6,6 +6,7 @@ from utils.get import get_move_step
 from shared.universe import conf, elem, flow, prob, util
 from planning.markov import enum_commodity, enum_state, enum_transition
 
+
 def build_choice_model(): 
     for person in elem.person_list:
         # root 1: residential location
@@ -23,6 +24,7 @@ def build_choice_model():
                 elem.bundle_alt[comm]    = Alternative(str(comm), None, util.commodity_util[comm], 
                                                     elem.out_of_home_alt[person])
 
+
 def calc_inclusive_values():
     # calculate inclusive value
     for person in elem.person_list:
@@ -38,6 +40,7 @@ def calc_inclusive_values():
     for person in elem.person_list:
         elem.person_alt[person].volume = elem.person_flows[person]
 
+
 def calc_commodity_steps():
     # calculate choice volume 
     for person in elem.person_list:
@@ -50,6 +53,7 @@ def calc_commodity_steps():
         flow.in_home_flows[person]     = elem.in_home_alt[person].calc_choice_volume()
         flow.out_of_home_flows[person] = elem.out_of_home_alt[person].calc_choice_volume()
 
+
 def add_movement_steps(path, timeslice, add_step):
     # load the path flow onto movements
     # if path is None:
@@ -58,6 +62,7 @@ def add_movement_steps(path, timeslice, add_step):
     for each_move in path.moves_on_path[timeslice]:
         get_move_step(each_move)
         flow.movement_steps[each_move] = flow.movement_steps[each_move] + add_step
+
 
 def calc_state_flows():
     # calculate flow variables based on state optimal utility

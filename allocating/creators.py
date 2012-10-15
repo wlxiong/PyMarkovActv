@@ -73,8 +73,8 @@ def add_person(key, work_key, home_key, population):
 def set_corr(a, b, corr):
     pa = elem.persons[a]
     pb = elem.persons[b]
-    conf.corr[(pa,pb)] = corr
-    conf.corr[(pb,pa)] = corr
+    conf.corr[(pa, pb)] = corr
+    conf.corr[(pb, pa)] = corr
 
 def add_sidewalk(key, head_name, tail_name, walk_time, capacity):
     sidewalk_name = 'SW' + str(key)

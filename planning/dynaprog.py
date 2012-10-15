@@ -1,8 +1,10 @@
 # Markov decision process
+from __future__ import division
 import math
 from utils.convert import min2slice
 from shared.universe import conf, util, prob, elem, flow
 from planning.markov import enum_commodity, enum_state, enum_transition
+
 
 def calc_activity_choice_prob():
     # activity/zone choice probability
@@ -11,6 +13,7 @@ def calc_activity_choice_prob():
             for state in enum_state(comm, timeslice):
                     prob.activity_choice_prob[comm.person][timeslice][(state.activity,state.zone)] += \
                         flow.state_flows[comm][timeslice][state] / elem.person_flows[comm.person]
+
 
 def calc_socio_activity_util():
     # social utility

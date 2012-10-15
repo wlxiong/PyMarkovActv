@@ -63,7 +63,7 @@ class Path(object):
             if isinstance(each_edge.related_vector, TransitLine):
                 all_lines.append(each_edge.related_vector)
         for i in xrange(len(all_lines)-1):
-            if all_lines[i] <> all_lines[i+1]:
+            if all_lines[i] != all_lines[i+1]:
                 num_transfer = num_transfer + 1.0
         return num_transfer
 

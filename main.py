@@ -7,6 +7,10 @@ from allocating.generators import gen_solo_activity_util, gen_path_set, find_sho
 from allocating.creators import set_corr
 from stats.timer import print_current_time
 
+# TODO: replace the dictionary with numpy.array
+# TODO: use integers to index multidimension arrays
+
+
 def run_multi_scenarios(case_name, corr_list):
     # try distinct corrs
     for corr in corr_list:
@@ -24,6 +28,7 @@ def run_multi_scenarios(case_name, corr_list):
 
         # generate visual results
         # draw_zone_population(4)
+
 
 def main():
     # initialize the timer
@@ -46,11 +51,12 @@ def main():
     print_current_time()
 
     # run multiple scenarios
-    corr_list = [corr/10.0 for corr in range(10,-1,-1)]
+    corr_list = [corr / 10.0 for corr in range(10, -1, -5)]
     run_multi_scenarios(case_name, corr_list)
 
     # export multi-run data
     export_multi_run_data(case_name)
+
 
 if __name__ == '__main__':
     # import cProfile

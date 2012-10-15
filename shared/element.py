@@ -52,4 +52,3 @@ class Element(object):
         self.person_list = []
         # 1-dimension dict, i.e. person_flows[person]
         self.person_flows = {}
-        

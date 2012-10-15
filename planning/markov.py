@@ -1,4 +1,4 @@
-import hashlib
+from __future__ import division
 from shared.universe import conf, elem, util
 from utils.convert import min2slice
 from itertools import combinations
@@ -73,11 +73,13 @@ class Transition(object):
         return self.state == other.state and \
                self.path == other.path
 
+
 def enum_commodity():
     # for different work-home location and activity bundles
     for person in elem.person_list:
         for bundle in elem.bundles.values():
             yield Commodity(person, bundle)
+
 
 def enum_state(commodity, timeslice):
     activity_bundle = commodity.bundle.activity_set
@@ -88,8 +90,8 @@ def enum_state(commodity, timeslice):
     # yield states with different number of activities
     for N in xrange(len(outdoor_activities)):
         # generate different combinations from the N activities
-        for todo_list in combinations(outdoor_activities, N+1):
-            todo_set = frozenset(todo_list + (elem.home_pm_activity , ))
+        for todo_list in combinations(outdoor_activities, N + 1):
+            todo_set = frozenset(todo_list + (elem.home_pm_activity, ))
             # pick up each activity in the todo list
             for each_actv in todo_list:
                 # choose one location for the activity
@@ -97,6 +99,7 @@ def enum_state(commodity, timeslice):
                     yield State(each_actv, position, todo_set)
     # yield a state with the last activity: in-home activity in PM
     yield commodity.term_state
+
 
 def enum_path(timeslice, this_zone, next_zone):
     shortest_path = elem.shortest_path[this_zone][next_zone]
@@ -106,6 +109,7 @@ def enum_path(timeslice, this_zone, next_zone):
     if starting_time > min2slice(conf.DAY):
         return
     yield shortest_path, starting_time, travel_cost
+
 
 def enum_transition(commodity, timeslice, state):
     for next_actv in state.todo:
@@ -123,7 +127,7 @@ def enum_transition(commodity, timeslice, state):
                 location_set = [state.zone]
             else:
                 location_set = next_actv.locations
-        if next_actv <> state.activity:
+        if next_actv != state.activity:
             next_todo = state.todo.difference([state.activity])
         else:
             next_todo = state.todo
@@ -136,7 +140,7 @@ def enum_transition(commodity, timeslice, state):
                     continue
                 # calculate of schedule delay
                 schedule_delay = 0.0
-                if state.activity <> next_actv:
+                if state.activity != next_actv:
                     schedule_delay = next_actv.calc_schedule_delay(starting_time)
                 yield (Transition(next_state, each_path),
                        starting_time, travel_cost, schedule_delay)

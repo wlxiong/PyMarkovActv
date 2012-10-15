@@ -10,7 +10,7 @@ class Alternative(object):
         self.parent, self.children = parent, []
         self.volume = volume
         # add this alternative to the children list of its parent
-        if self.parent <> None:
+        if self.parent != None:
             self.parent.add_child(self)
         # varables to be calculated
         self.mid_child_util = None
@@ -38,7 +38,7 @@ class Alternative(object):
         self.children.append(new_child)
         
     def calc_mid_child_util(self):
-        if self.mid_child_util <> None:
+        if self.mid_child_util != None:
             return self.mid_child_util
         if len(self.children) == 0:
             self.mid_child_util = 0.0
@@ -49,7 +49,7 @@ class Alternative(object):
         return self.mid_child_util
     
     def calc_inclusive_value(self):
-        if self.inclusive_value <> None:
+        if self.inclusive_value != None:
             return self.inclusive_value
         if len(self.children) == 0:
             self.inclusive_value = self.util
@@ -63,7 +63,7 @@ class Alternative(object):
         return self.inclusive_value
     
     def calc_choice_prob(self):
-        if self.choice_prob <> None:
+        if self.choice_prob != None:
             return self.choice_prob
         if self.parent == None:
             self.choice_prob = float('nan')
@@ -75,7 +75,7 @@ class Alternative(object):
         return self.choice_prob
         
     def calc_choice_volume(self):
-        if self.volume <> None:
+        if self.volume != None:
             return self.volume 
         if self.parent == None:
             raise Exception('No enough data for calculate population! ')

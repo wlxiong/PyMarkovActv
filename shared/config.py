@@ -1,24 +1,20 @@
 # configuration class
 
+
 class Config(object):
     # length of a single day
     DAY = 1440
     # minutes per tick
     TICK = 20
-    def __init__(self, MAX_ITER = 16, HORIZON = 1440):
+
+    def __init__(self, MAX_ITER=16, HORIZON=1440):
         self.MAX_ITER, self.HORIZON = MAX_ITER, HORIZON
 
         # log file
-        self.log_file_name = 'debug'+'.log'
+        self.log_file_name = 'logs/debug'+'.log'
         self.log = open(self.log_file_name, 'w')
-
-        # number of sampling
-        self.num_sample = 1
         
-        # feedback effect parameters
-        self.effect_param = 0.0
-
-        # variance tolerance of optimal activitiy timing
+        # variance tolerance of preferred activitiy timing
         self.DELTA = 0.25 * 60.0
         # the link capacity
         self.CAPACITY_ped = 30000
@@ -61,3 +57,6 @@ class Config(object):
         # correlation between household members
         # 1-dimension dict, i.e. corr[(person 1,person 2)]
         self.corr = {}
+
+
+conf = Config()

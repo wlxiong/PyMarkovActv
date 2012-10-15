@@ -1,17 +1,18 @@
 # Utilities, probabilites and flows 
+import numpy as np
 
 class UtilVar(object):
-    def __init__(self):
+    def __init__(self, n_per, n_time, n_actv, n_comm, n_state):
         # 2-dimension nested dict 
         # i.e. solo_util[timeslice][activity]
-        self.solo_util = {}
+        self.solo_util = np.zeros(n_time, n_actv)
         # 3-dimension nested dict 
         # i.e. socio_util[person][timeslice][(activity,zone)]
-        self.socio_util = {}
+        self.socio_util = np.zeros(n_time, n_actv)
         # 3-dimension nested dict
         # i.e. state_util[commodity][timeslice][state]
         # the expected maximum utility: E{max_d {V_d} }
-        self.state_util = {}
+        self.state_util = np.zeros(n_comm, n_time, n_state)
         # 1-dimension dict, i.e. commodity_util[commodity]
         self.commodity_util = {}
         # expected utility for all out-of-home patterns
@@ -35,21 +36,19 @@ class ProbVar(object):
         # self.out_of_home_choice_prob = {}
         # # 1-dimension dict, i.e. commodity_choice_probc[comm]
         # self.commodity_choice_prob = {}
-
         # 4-dimension nested dict
         # i.e. transition_choice_prob[commodity][timeslice][state][transition]
         self.transition_choice_prob = {}
-        
         # 3-dimension nested dict
         # i.e. activity_choice_prob[person][timeslice][(activity,zone)]
         self.activity_choice_prob = {}
+
 
 class FlowVar(object):
     """ The world of the economic activities and transport network. 
         The variables in this class define the rules of this world.
     """
     def __init__(self):
-        
         # assginment
         # 1-dimension dict, i.e. movement_flows[move]
         self.movement_flows = {}
@@ -79,11 +78,11 @@ class FlowVar(object):
         # 2-dimension nested dict
         # i.e. activity_population[timeslice][activity]
         self.activity_population = {}
-
         ## export to MATLAB
         ## mat_pattern_flow = [None] * num_sample
         ## mat_zone_passenger = [None] * num_sample
         ## mat_aggrg_trip = [None] * num_sample
+
 
 class StatVar(object):
     """ The statistics generated from multipe scenarios
@@ -96,4 +95,3 @@ class StatVar(object):
         self.out_of_home_flows = {}
         self.in_home_flows = {}
         self.person_util = {}
-

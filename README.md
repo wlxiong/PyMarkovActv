@@ -11,6 +11,7 @@ solve the problem and maximum likelihood method is employed to estimate the mode
 Publication
 ===========
 
-Modeling Within-day Dynamics in Activity Scheduling: A Markov Decision Process Approach. 
+Yiliang Xiong and William H.K. Lam.
+_Modeling Within-day Dynamics in Activity Scheduling: A Markov Decision Process Approach_. 
 Journal of the Eastern Asia Society for Transportation Studies, Vol. 9 (2011), pp. 452--467,
 [Fulltext](http://www.jstage.jst.go.jp/article/easts/9/0/9_0_452/_article). 

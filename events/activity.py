@@ -1,15 +1,15 @@
 # Activity class
 import math
-import hashlib
 from mpmath import quad
 from utils.convert import min2slice, slice2min
 from shared.universe import conf
+
 
 class Activity(object):
     "Each activity is specified as a set of confeters which determine its marginal utility. "
     def __init__(self, name, U0, Um, Sigma, Lambda, Xi, \
                  time_win, min_duration, \
-                 is_joint = 0, is_madatory = 0, pref_timing = 0):
+                 is_joint=0, is_madatory=0, pref_timing=0):
         ''' U0 is the baseline utility level of acivity. 
             Um is the maximum utility of activity. 
             Sigma determines the slope or steepness of the curve. 
@@ -27,11 +27,11 @@ class Activity(object):
         self.locations = []
         self.time_win = (min2slice(time_win[0]), min2slice(time_win[1]))
         self.min_duration = min2slice(min_duration)
-        
+
     def __hash__(self):
         # return int(hashlib.md5(repr(self)).hexdigest(), 16)
         return hash(self.name)
-        
+
     def __repr__(self):
         return self.name
 
@@ -43,14 +43,14 @@ class Activity(object):
 
     def add_location(self, pos):
         self.locations.append(pos)
-    
+
     def marginal_util(self, time):
         "The marginal activity utility is ONLY a function of the duration. "
         nominator = self.Sigma*self.Lambda*self.Um
         denominator = (math.exp( self.Sigma*(time-self.Xi) ) *
             math.pow(1.0+math.exp( -self.Sigma*(time-self.Xi) ), self.Lambda+1.0) )
         return self.U0 + nominator/denominator
-        
+
     def discrete_util(self, timeslice):
         lower = slice2min(timeslice) - conf.TICK/2.0
         upper = lower + conf.TICK
@@ -84,12 +84,13 @@ class Bundle(object):
     def __hash__(self):
         # return int(hashlib.md5(repr(self)).hexdigest(), 16)
         return hash(repr(self))
-        
+
     def __repr__(self):
         return self.id
 
     def __eq__(self, other):
         return self.name == other.name
+
 
 class Person(object):
     """ Each individual has his/her own work-home pair. 
